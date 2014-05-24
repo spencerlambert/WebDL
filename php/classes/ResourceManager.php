@@ -21,7 +21,7 @@ class ResourceManager {
 			$username = MASTER_DB_USER;
 			$password = MASTER_DB_PASS;
                         /*
-                         SSL is not supported in the version of PHP on the 32 bit best ap server.
+                         TODO: Add SSL Support.
                         $ssl = array(
                                     PDO::MYSQL_ATTR_SSL_KEY    =>'/etc/mysql/certs/client-key.pem',
                                     PDO::MYSQL_ATTR_SSL_CERT=>'/etc/mysql/certs/client-cert.pem',

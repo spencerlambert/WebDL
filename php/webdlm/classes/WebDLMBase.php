@@ -5,6 +5,7 @@
 class WebDLMBase () {
     protected $install_path;
     protected $dlm_id;
+    protected $config_list = array();
     protected $config = array();
     protected $connectors = array();
     protected $connectors_by_key = array();
@@ -41,8 +42,19 @@ class WebDLMBase () {
             $this->connectors_by_foreign_key[$this->connectors[$row['ConnectorID']]->get_foreign_key_name][$row['ConnectorID']] = $this->connectors[$row['ConnectorID']];
 
         }
+        
+        foreach ($this->config_list as $name) {
+            if (!isset($this->config[$name])) {
+                AppMessage::output('Config item '.$name.' is missing for DLM '.$this->dlm_id.', things will break!');
+            }
+        }
 
     }
+    
+    // This function is called by the DLM Controller, prior to fetching any data.
+    // If the connection is good to the data source, the it needs to return TRUE.
+    abstract public function is_ready();
+    
     
     public function fetch($key, $key_name, $columns = array()) {
         
