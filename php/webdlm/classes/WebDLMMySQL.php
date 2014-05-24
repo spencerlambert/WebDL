@@ -44,7 +44,7 @@ class WebDLMMySQL extends WebDLMBase {
         try {
             $this->pdo = new PDO($dsn, $username, $password);
         } catch (PDOException $e) {
-            AppMessage::output('Connection failed: ' . $e->getMessage());
+            AppMessage::output('MySQL Connection failed: ' . $e->getMessage());
             $this->pdo = false;
             return false;
         }
