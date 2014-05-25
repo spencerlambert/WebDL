@@ -37,7 +37,7 @@ class ResourceManager {
 				self::$DB_MASTER_PDO = new PDO($dsn, $username, $password);
                             }
 			} catch (PDOException $e) {
-				AppMessage::output('Connection failed: ' . $e->getMessage());
+				UserMessage::output('Connection failed: ' . $e->getMessage(), 'ResourceManager.php');
 			}
 		} elseif (class_exists($resource) && property_exists('ResourceManager', $resource)) {
 			self::$$resource = new $resource($options);

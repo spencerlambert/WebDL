@@ -83,6 +83,7 @@ class WebDLMController {
         
         $data = array();
         foreach ($required_dlms as $id) (
+            $data[$id] = array();
             $data[$id]['IS_ONLINE'] = $dlms[$id]->is_ready();
             $data[$id]['DATA'] = "";
             if ($data[$id]['IS_ONLINE'] === true) 
