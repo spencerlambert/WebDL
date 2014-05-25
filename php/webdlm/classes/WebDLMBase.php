@@ -24,8 +24,17 @@ class WebDLMBase () {
         foreach ($sth->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $this->config[$row['Name']] = $row['Value'];
         }
-        
-        $sql = "SELECT ConnectorID FROM DLMConnector WHERE DLMID=:id";
+
+        $sql = "SELECT
+                    con.ConnectorID
+                FROM
+                    ".MASTER_DB_NAME_WITH_PREFIX."DLMConnector as con,
+                    ".MASTER_DB_NAME_WITH_PREFIX."DLMTreeColumn as t,
+                    ".MASTER_DB_NAME_WITH_PREFIX."DLMTreeTable as c,
+                WHERE
+                    t.DLMID=:id AND
+                    t.DLMTreeTableID=c.DLMTreeTableID AND
+                    con.DLMTreeColumnIDPrimary=c.DLMTreeColumnID";
         $params = array(':id'=>$this->dlm_id);
         $sth = $db->prepare($sql);
         $sth->execute($params);
