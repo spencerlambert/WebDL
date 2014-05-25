@@ -80,7 +80,7 @@ class WebDLMMySQL extends WebDLMBase {
         $sql = "SELECT ".implode(', ', $col_str)." FROM ".implode(', ', $table_str);
         if (count($where_str) != 0)
             $sql .= " WHERE ".implode(' AND ', $where_str);
-        $sth = $db->prepare($sql);
+        $sth = $this->pdo->prepare($sql);
         $sth->execute($params);
 
         $data = array();
