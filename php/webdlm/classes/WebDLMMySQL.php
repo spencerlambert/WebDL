@@ -94,7 +94,7 @@ class WebDLMMySQL extends WebDLMBase {
         
         return $data;
         
-    };
+    }
     
 }
 ?>

@@ -82,13 +82,13 @@ class WebDLMController {
         }
         
         $data = array();
-        foreach ($required_dlms as $id) (
+        foreach ($required_dlms as $id) {
             $data[$id] = array();
             $data[$id]['IS_ONLINE'] = $this->dlms[$id]->is_ready();
             $data[$id]['DATA'] = "";
             if ($data[$id]['IS_ONLINE'] === true) 
                 $data[$id]['DATA'] = $this->dlms[$id]->fetch_data($return_ids, $where_ids, $this->columns_by_dlm[$id]);
-        )
+        }
         
         // dumping for testing...
         var_dump($data);
