@@ -66,7 +66,7 @@ class WebDLMController {
             $this->columns[$row['DLMTreeColumnID']] = $class;
             if (!isset($this->columns_by_dlm[$row['DLMID']]))
                 $this->columns_by_dlm[$row['DLMID']] = array();
-            $this->columns_by_dlm[$row['DLMID']][] = $class;
+            $this->columns_by_dlm[$row['DLMID']][$row['DLMTreeColumnID']] = $class;
             
         }
 
