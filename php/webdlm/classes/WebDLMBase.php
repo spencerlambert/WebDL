@@ -2,7 +2,7 @@
 /**
  * All DLMs need to extend this class
  */
-class WebDLMBase {
+abstract class WebDLMBase {
     protected $install_path;
     protected $dlm_id;
     protected $config_list = array();
