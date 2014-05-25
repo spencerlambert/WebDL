@@ -41,7 +41,7 @@ class WebDLMController {
         $sql = "SELECT        
                     c.DLMTreeColumnID,
                     c.DLMTreeTableID,
-                    c.DLMID,
+                    t.DLMID,
                     t.Name as TName,
                     c.Name as CName,
                     c.Type,
