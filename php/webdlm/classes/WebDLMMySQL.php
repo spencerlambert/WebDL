@@ -55,7 +55,7 @@ class WebDLMMySQL extends WebDLMBase {
     
     // TODO: Make the WHERE part smarted to know required table joins.
     // TODO: WHERE also needs to include the Connector Logic.
-    public function fetch_data($col_ids, $where_ids, $tree) {
+    public function get($col_ids, $where_ids, $tree) {
         $where_str = array();
         $table_str = array();
         $params = array();
