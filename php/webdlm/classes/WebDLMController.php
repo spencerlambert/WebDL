@@ -5,8 +5,9 @@
  **/
 class WebDLMController {
     private $dlms = array();
-    private $key_to_dlmid = array();
-    private $column_to_dlmid = array();
+    private $keys = array();
+    private $columns = array();
+    private $columns_by_dlm = array();
         
     public function __construct() {
         $db = ResourceManager::get("DB_MASTER_PDO");
@@ -24,25 +25,27 @@ class WebDLMController {
         // Match all keys to a DLM
         $sql = "SELECT
                     DLMTreeColumnID,
-                    DLMID
                 FROM
-                    ".MASTER_DB_NAME_WITH_PREFIX."DLMTreeTable t,
                     ".MASTER_DB_NAME_WITH_PREFIX."DLMTreeColumn c
                 WHERE
-                    t.DLMTreeTableID=c.DLMTreeTableID AND
-                    c.isKey = 'Yes'";
+                    c.IsKey = 'Yes'";
         $sth = $db->prepare($sql);
         $sth->execute();
 
         foreach ($sth->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $this->key_to_dlmid[$row['DLMTreeColumnID']] = $row['DLMID'];
+            $this->keys[$row['DLMTreeColumnID']] = $row['DLMTreeColumnID'];
         }
         
 
         // Match all columns to a DLM
-        $sql = "SELECT
-                    DLMTreeColumnID,
-                    DLMID
+        $sql = "SELECT        
+                    c.DLMTreeColumnID,
+                    c.DLMTreeTableID,
+                    c.DLMID,
+                    t.Name as TName,
+                    c.Name as CName,
+                    c.Type,
+                    c.IsKey
                 FROM
                     ".MASTER_DB_NAME_WITH_PREFIX."DLMTreeTable t,
                     ".MASTER_DB_NAME_WITH_PREFIX."DLMTreeColumn c
@@ -52,16 +55,46 @@ class WebDLMController {
         $sth->execute();
 
         foreach ($sth->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $this->column_to_dlmid[$row['DLMTreeColumnID']] = $row['DLMID'];
+            $class = new stdClass();
+            $class->c_id = $row['DLMTreeColumnID'];
+            $class->t_id = $row['DLMTreeTableID'];
+            $class->dlm_id = $row['DLMID'];
+            $class->c_name = $row['CName'];
+            $class->t_name = $row['TName'];
+            $class->type = $row['Type'];
+            $class->is_key = $row['IsKey'];
+            $this->columns[$row['DLMTreeColumnID']] = $class;
+            if (!isset($this->columns_by_dlm[$row['DLMID']]))
+                $this->columns_by_dlm[$row['DLMID']] = array();
+            $this->columns_by_dlm[$row['DLMID']][] = $class;
+            
         }
 
     }
     
-    public function fetch_data($col_ids, $matches) {
+    public function fetch_data($return_ids, $where_ids) {
+        $required_dlms = array();
+        foreach ($return_ids as $id) {
+            $required_dlms[$this->columns[$id]->dlm_id] = $this->columns[$id]->dlm_id;
+        }
+        foreach ($where_ids as $id=>$val) {
+            $required_dlms[$this->columns[$id]->dlm_id] = $this->columns[$id]->dlm_id;
+        }
+        
+        $data = array();
+        foreach ($required_dlms as $id) (
+            $data[$id]['IS_ONLINE'] = $dlms[$id]->is_ready();
+            $data[$id]['DATA'] = "";
+            if ($data[$id]['IS_ONLINE'] === true) 
+                $data[$id]['DATA'] = $dlms[$id]->fetch_data($return_ids, $where_ids, $this->columns_by_dlm[$id]);
+        )
+        
+        // dumping for testing...
+        var_dump($data);
         
     }
 
-    public function update_data($col_vals, $matches) {
+    public function update_data($update_ids, $where_ids) {
         
     }
     

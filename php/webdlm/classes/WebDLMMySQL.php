@@ -52,5 +52,49 @@ class WebDLMMySQL extends WebDLMBase {
         return true;
         
     }
+    
+    // TODO: Make the WHERE part smarted to know required table joins.
+    // TODO: WHERE also needs to include the Connector Logic.
+    public function fetch_data($col_ids, $where_ids, $tree) {
+        $where_str = array();
+        $table_str = array();
+        $params = array();
+        $param_id = 0;
+        foreach ($where_ids as $id=>$val) {
+            if (isset($tree[$id])) {
+                $where_str[] = $tree[$id]->t_name.".".$tree[$id]->c_name."=:".$param_id;
+                $params[":".$param_id] = $val;
+                $param_id++;
+                $table_str[$tree[$id]->t_id] = $tree[$id]->t_name;
+            }
+        }
+        
+        $col_str = array();
+        foreach ($col_ids as $id) {
+            if (isset($tree[$id])) {
+                $col_str[] = $tree[$id]->t_name.".".$tree[$id]->c_name." as _".$id;
+                $table_str[$tree[$id]->t_id] = $tree[$id]->t_name;
+            }
+        }
+        
+        $sql = "SELECT ".implode(', ', $col_str)." FROM ".implode(', ', $table_str);
+        if (count($where_str) != 0)
+            $sql .= " WHERE ".implode(' AND ', $where_str);
+        $sth = $db->prepare($sql);
+        $sth->execute($params);
+
+        $data = array();
+        foreach ($sth->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $tmp = array();
+            foreach ($row as $name=>$val) {
+                $tmp[trim($name, "_")] = $val;
+            }
+            $data[] = $tmp;
+        }
+        
+        return $data;
+        
+    };
+    
 }
 ?>

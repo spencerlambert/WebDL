@@ -48,17 +48,16 @@ class WebDLMBase () {
                 AppMessage::output('Config item '.$name.' is missing for DLM '.$this->dlm_id.', things will break!');
             }
         }
-
+        
     }
     
     // This function is called by the DLM Controller, prior to fetching any data.
     // If the connection is good to the data source, the it needs to return TRUE.
     abstract public function is_ready();
+    abstract public function fetch_data($col_ids, $where_ids, $tree);
     
     
-    public function fetch($key, $key_name, $columns = array()) {
-        
-    }
+
     
     public function get_dlm_id() {
         return $this->dlm_id;
