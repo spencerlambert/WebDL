@@ -11,7 +11,7 @@ class WebDLMBase {
     protected $connectors_by_key = array();
     protected $connectors_by_foreign_key = array();
     
-    protected __construct($dlm_id) {
+    protected function __construct($dlm_id) {
         $db = ResourceManager::get("DB_MASTER_PDO");
         $this->install_path = ABSPATH.'dlm/'.get_class($this).'/';
         $this->dlm_id = $dlm_id;
