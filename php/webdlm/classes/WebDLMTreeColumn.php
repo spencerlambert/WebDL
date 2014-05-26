@@ -1,5 +1,5 @@
 <?php
-class WebDLMColumn {
+class WebDLMTreeColumn {
 
     public $c_id;
     public $t_id;
