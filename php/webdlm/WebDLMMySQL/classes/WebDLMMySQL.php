@@ -79,11 +79,11 @@ class WebDLMMySQL extends WebDLMBase {
         
         if (isset($request_array['AND_MATCH'])) {
             foreach ($request_array['AND_MATCH'] as $id=>$val) {
-                if (isset($this->columns[$id])) {
-                    $and_ary[] = $this->columns[$id]->t_name.".".$this->columns[$id]->c_name."=:".$param_id;
+                if (isset($this->tree->columns[$id])) {
+                    $and_ary[] = $this->tree->columns[$id]->t_name.".".$this->tree->columns[$id]->c_name."=:".$param_id;
                     $params[":".$param_id] = $val;
                     $param_id++;
-                    $table_str[$this->columns[$id]->t_id] = $this->columns[$id]->t_name;
+                    $table_str[$this->tree->columns[$id]->t_id] = $this->tree->columns[$id]->t_name;
                 }
             }
             $where_ary[] = implode(' AND ', $and_ary);
@@ -91,11 +91,11 @@ class WebDLMMySQL extends WebDLMBase {
 
         if (isset($request_array['OR_MATCH'])) {
             foreach ($request_array['OR_MATCH'] as $id=>$val) {
-                if (isset($this->columns[$id])) {
-                    $or_ary[] = $this->columns[$id]->t_name.".".$this->columns[$id]->c_name."=:".$param_id;
+                if (isset($this->tree->columns[$id])) {
+                    $or_ary[] = $this->tree->columns[$id]->t_name.".".$this->tree->columns[$id]->c_name."=:".$param_id;
                     $params[":".$param_id] = $val;
                     $param_id++;
-                    $table_str[$this->columns[$id]->t_id] = $this->columns[$id]->t_name;
+                    $table_str[$this->tree->columns[$id]->t_id] = $this->tree->columns[$id]->t_name;
                 }
             }
             $where_ary[] = "(".implode(' OR ', $or_ary).")";
@@ -103,11 +103,11 @@ class WebDLMMySQL extends WebDLMBase {
 
         if (isset($request_array['WILDCARD_MATCH'])) {
             foreach ($request_array['WILDCARD_MATCH'] as $id=>$val) {
-                if (isset($this->columns[$id])) {
-                    $like_ary[] = $this->columns[$id]->t_name.".".$this->columns[$id]->c_name." LIKE :".$param_id;
+                if (isset($this->tree->columns[$id])) {
+                    $like_ary[] = $this->tree->columns[$id]->t_name.".".$this->tree->columns[$id]->c_name." LIKE :".$param_id;
                     $params[":".$param_id] = $val;
                     $param_id++;
-                    $table_str[$this->columns[$id]->t_id] = $this->columns[$id]->t_name;
+                    $table_str[$this->tree->columns[$id]->t_id] = $this->tree->columns[$id]->t_name;
                 }
             }
             $where_ary[] = implode(' AND ', $like_ary);
@@ -115,9 +115,9 @@ class WebDLMMySQL extends WebDLMBase {
 
         
         foreach ($request_array['COLUMN_ID'] as $id) {
-            if (isset($this->columns[$id])) {
-                $col_ary[] = $this->columns[$id]->t_name.".".$this->columns[$id]->c_name." as _".$id;
-                $table_str[$this->columns[$id]->t_id] = $this->columns[$id]->t_name;
+            if (isset($this->tree->columns[$id])) {
+                $col_ary[] = $this->tree->columns[$id]->t_name.".".$this->tree->columns[$id]->c_name." as _".$id;
+                $table_str[$this->tree->columns[$id]->t_id] = $this->tree->columns[$id]->t_name;
             }
         }
         
