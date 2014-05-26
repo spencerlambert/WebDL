@@ -1,6 +1,16 @@
 <?php
 class WebDLMColumn {
 
+    public $c_id;
+    public $t_id;
+    public $dlm_id;
+    public $c_name;
+    public $t_name;
+    public $type;
+    public $is_key;
+
+    public function __construct() {
+    }
 
     static public function get_columns($dlmid = null) {
         $db = ResourceManager::get("DB_MASTER_PDO");
@@ -46,7 +56,7 @@ class WebDLMColumn {
         }
 
         foreach ($sth->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $class = new stdClass();
+            $class = new WebDLMColumn();
             $class->c_id = $row['DLMTreeColumnID'];
             $class->t_id = $row['DLMTreeTableID'];
             $class->dlm_id = $row['DLMID'];

@@ -15,9 +15,10 @@ abstract class WebDLMBase {
     
     protected function __construct($dlm_id) {
         $db = ResourceManager::get("DB_MASTER_PDO");
-        $this->install_path = ABSPATH.'dlm/'.get_class($this).'/';
+        $this->install_path = ABSPATH.'webdlm/'.get_class($this).'/';
         $this->dlm_id = $dlm_id;
         
+        // Load all the config values
         $sql = "SELECT * FROM ".MASTER_DB_NAME_WITH_PREFIX."DLMConfig WHERE DLMID=:id";
         $params = array(':id'=>$this->dlm_id);
         $sth = $db->prepare($sql);
@@ -27,6 +28,7 @@ abstract class WebDLMBase {
             $this->config[$row['Name']] = $row['Value'];
         }
 
+        // Should be move the the WebDLMConnector class as a static function with dlm_id as the arg.
         $sql = "SELECT
                     con.ConnectorID
                 FROM
@@ -54,6 +56,8 @@ abstract class WebDLMBase {
 
         }
         
+        
+        // See if any configs are missing.
         foreach ($this->config_list as $name) {
             if (!isset($this->config[$name])) {
                 AppMessage::output('Config item '.$name.' is missing for DLM '.$this->dlm_id.', things will break!');
