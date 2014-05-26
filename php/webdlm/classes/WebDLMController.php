@@ -72,14 +72,41 @@ class WebDLMController {
 
     }
     
-    public function fetch_data($return_ids, $where_ids) {
+    /*******
+     * $request_array:
+     * Two dimensional array with following indexes
+     * COLUMN_ID: An array of the column ids to be returned.
+     * AND_MATCH: An array of column ids and matched to preform for fetching the row(s).
+     * OR_MATCH: Like AND_MATCHES, but with the OR operator between each.
+     * WILDCARD_MATCH: Uses the % char as a wildcard, working like the LIKE MySQL operator.
+     **/
+    public function get_dlm_data($request_array) {
+        // Get a list of all the DLMs we need to make requests to.
         $required_dlms = array();
-        foreach ($return_ids as $id) {
-            $required_dlms[$this->columns[$id]->dlm_id] = $this->columns[$id]->dlm_id;
+        if (isset($request_array['COLUMN_ID'])) {
+            foreach ($request_array['COLUMN_ID'] as $id) {
+                $required_dlms[$this->columns[$id]->dlm_id] = $this->columns[$id]->dlm_id;
+            }
+        } else {
+            UserMessage::output('No COLUMN_ID in the $request_array', 'WebDLMController.php');
+            return false;
         }
-        foreach ($where_ids as $id=>$val) {
-            $required_dlms[$this->columns[$id]->dlm_id] = $this->columns[$id]->dlm_id;
+        if (isset($request_array['AND_MATCH'])) {
+            foreach ($request_array['AND_MATCH'] as $id=>$val) {
+                $required_dlms[$this->columns[$id]->dlm_id] = $this->columns[$id]->dlm_id;
+            }
         }
+        if (isset($request_array['OR_MATCH'])) {
+            foreach ($request_array['OR_MATCH'] as $id=>$val) {
+                $required_dlms[$this->columns[$id]->dlm_id] = $this->columns[$id]->dlm_id;
+            }
+        }
+        if (isset($request_array['WILDCARD_MATCH'])) {
+            foreach ($request_array['WILDCARD_MATCH'] as $id=>$val) {
+                $required_dlms[$this->columns[$id]->dlm_id] = $this->columns[$id]->dlm_id;
+            }
+        }
+
         
         $data = array();
         foreach ($required_dlms as $id) {
@@ -87,7 +114,7 @@ class WebDLMController {
             $data[$id]['IS_ONLINE'] = $this->dlms[$id]->is_ready();
             $data[$id]['DATA'] = "";
             if ($data[$id]['IS_ONLINE'] === true) 
-                $data[$id]['DATA'] = $this->dlms[$id]->fetch_data($return_ids, $where_ids, $this->columns_by_dlm[$id]);
+                $data[$id]['DATA'] = $this->dlms[$id]->get($request_array, $this->columns_by_dlm[$id]);
         }
         
         // dumping for testing...

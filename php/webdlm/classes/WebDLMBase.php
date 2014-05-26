@@ -59,13 +59,21 @@ abstract class WebDLMBase {
         }
         
     }
-    
+
+    /*******
+     * $request_array:
+     * Two dimensional array with following indexes
+     * COLUMN_ID: An array of the column ids to be returned.
+     * AND_MATCH: An array of column ids and matched to preform for fetching the row(s).
+     * OR_MATCH: Like AND_MATCHES, but with the OR operator between each.
+     * WILDCARD_MATCH: Uses the % char as a wildcard, working like the LIKE MySQL operator.
+     **/    
     // This function is called by the DLM Controller, prior to fetching any data.
     // If the connection is good to the data source, the it needs to return TRUE.
     abstract public function is_ready();
-    abstract public function get($col_ids, $where_ids, $tree);
-    abstract public function post($col_ids, $where_ids, $tree);
-    abstract public function delete($col_ids, $where_ids, $tree);
+    abstract public function get($request_array, $tree);  // Retrives data
+    abstract public function post($request_array, $tree); // Both adds and updates data
+    abstract public function delete($request_array, $tree); // Removed data
 
     
 

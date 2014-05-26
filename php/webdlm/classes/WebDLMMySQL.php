@@ -52,10 +52,22 @@ class WebDLMMySQL extends WebDLMBase {
         return true;
         
     }
-    
+
+    /*******
+     * $request_array:
+     * Two dimensional array with following indexes
+     * COLUMN_ID: An array of the column ids to be returned.
+     * AND_MATCH: An array of column ids and matched to preform for fetching the row(s).
+     * OR_MATCH: Like AND_MATCHES, but with the OR operator between each.
+     * WILDCARD_MATCH: Uses the % char as a wildcard, working like the LIKE MySQL operator.
+     *
+     * $tree: is an array of classes the controller builds that describes of the data for
+     * this WebDLM instance is setup.
+     * 
+     **/    
     // TODO: Make the WHERE part smarted to know required table joins.
     // TODO: WHERE also needs to include the Connector Logic.
-    public function get($col_ids, $where_ids, $tree) {
+    public function get($request_array, $tree) {
         $where_str = array();
         $table_str = array();
         $params = array();
