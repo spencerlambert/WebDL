@@ -5,6 +5,8 @@ class WebDLMColumn {
     static public function get_columns($dlmid = null) {
         $db = ResourceManager::get("DB_MASTER_PDO");
         
+        $columns = array();
+        
         if ($dlmid === null) {
             // Match all columns to a DLM
             $sql = "SELECT        
@@ -52,11 +54,7 @@ class WebDLMColumn {
             $class->t_name = $row['TName'];
             $class->type = $row['Type'];
             $class->is_key = $row['IsKey'];
-            $this->columns[$row['DLMTreeColumnID']] = $class;
-            if (!isset($this->columns_by_dlm[$row['DLMID']]))
-                $this->columns_by_dlm[$row['DLMID']] = array();
-            $this->columns_by_dlm[$row['DLMID']][$row['DLMTreeColumnID']] = $class;
-            
+            $columns[$row['DLMTreeColumnID']] = $class;            
         }
     }
    
