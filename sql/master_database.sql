@@ -30,6 +30,9 @@ CREATE TABLE DLMTreeColumn (
     INDEX (DLMTreeTableID)
 );
 
+# WARNING: It is possible to INSERT a Tree Link across different DLMs, however this is
+# not part of the design, that is what connectors are for. The database will
+# allow it, but it will not work in the code, and my cause errors.
 CREATE TABLE DLMTreeLink (
     DLMTreeColumnID         int UNSIGNED,
     DLMTreeColumnIDForeign  int UNSIGNED,

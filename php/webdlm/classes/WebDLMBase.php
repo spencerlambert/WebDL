@@ -11,7 +11,7 @@ abstract class WebDLMBase {
     protected $connectors_by_key = array();
     protected $connectors_by_foreign_key = array();
     
-    protected $columns;
+    protected $tree;
     
     protected function __construct($dlm_id) {
         $db = ResourceManager::get("DB_MASTER_PDO");
@@ -64,7 +64,7 @@ abstract class WebDLMBase {
             }
         }
         
-        $this->columns = WebDLMColumn::get_columns($this->dlm_id);
+        $this->tree = new WebDLMTree($this->dlm_id);
         
     }
 

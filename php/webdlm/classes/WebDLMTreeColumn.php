@@ -18,7 +18,7 @@ class WebDLMTreeColumn {
         $columns = array();
         
         if ($dlmid === null) {
-            // Match all columns to a DLM
+            // Match all columns
             $sql = "SELECT        
                         c.DLMTreeColumnID,
                         c.DLMTreeTableID,
@@ -56,7 +56,7 @@ class WebDLMTreeColumn {
         }
 
         foreach ($sth->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $class = new WebDLMColumn();
+            $class = new WebDLMTreeColumn();
             $class->c_id = $row['DLMTreeColumnID'];
             $class->t_id = $row['DLMTreeTableID'];
             $class->dlm_id = $row['DLMID'];
