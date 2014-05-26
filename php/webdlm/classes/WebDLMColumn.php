@@ -56,6 +56,8 @@ class WebDLMColumn {
             $class->is_key = $row['IsKey'];
             $columns[$row['DLMTreeColumnID']] = $class;            
         }
+        
+        return $columns;
     }
    
 }
