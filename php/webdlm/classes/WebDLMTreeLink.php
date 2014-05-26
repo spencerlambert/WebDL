@@ -11,6 +11,8 @@ class WebDLMTreeLink {
     }
     
     static public function get_links($dlmid = null) {
+        $db = ResourceManager::get("DB_MASTER_PDO");
+
         $links = array();
         $links['BY_DLM'] = array();
         $links['BY_TABLE'] = array();
