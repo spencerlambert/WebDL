@@ -11,6 +11,8 @@ abstract class WebDLMBase {
     protected $connectors_by_key = array();
     protected $connectors_by_foreign_key = array();
     
+    protected $columns;
+    
     protected function __construct($dlm_id) {
         $db = ResourceManager::get("DB_MASTER_PDO");
         $this->install_path = ABSPATH.'dlm/'.get_class($this).'/';
@@ -58,6 +60,8 @@ abstract class WebDLMBase {
             }
         }
         
+        $this->columns = WebDLMColumn::get_columns($this->dlm_id);
+        
     }
 
     /*******
@@ -71,9 +75,9 @@ abstract class WebDLMBase {
     // This function is called by the DLM Controller, prior to fetching any data.
     // If the connection is good to the data source, the it needs to return TRUE.
     abstract public function is_ready();
-    abstract public function get($request_array, $tree);  // Retrives data
-    abstract public function post($request_array, $tree); // Both adds and updates data
-    abstract public function delete($request_array, $tree); // Removed data
+    abstract public function get($request_array);  // Retrives data
+    abstract public function post($request_array); // Both adds and updates data
+    abstract public function delete($request_array); // Removed data
 
     
 

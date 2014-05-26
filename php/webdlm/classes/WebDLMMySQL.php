@@ -61,37 +61,71 @@ class WebDLMMySQL extends WebDLMBase {
      * OR_MATCH: Like AND_MATCHES, but with the OR operator between each.
      * WILDCARD_MATCH: Uses the % char as a wildcard, working like the LIKE MySQL operator.
      *
-     * $tree: is an array of classes the controller builds that describes of the data for
-     * this WebDLM instance is setup.
      * 
      **/    
     // TODO: Make the WHERE part smarted to know required table joins.
     // TODO: WHERE also needs to include the Connector Logic.
-    public function get($request_array, $tree) {
-        $where_str = array();
-        $table_str = array();
+    public function get($request_array) {
+        $and_ary = array();
+        $or_ary = array();
+        $like_ary = array();
+        $table_ary = array();
+        $col_ary = array();
+        
+        $where_ary = array();
+        
         $params = array();
         $param_id = 0;
-        foreach ($where_ids as $id=>$val) {
-            if (isset($tree[$id])) {
-                $where_str[] = $tree[$id]->t_name.".".$tree[$id]->c_name."=:".$param_id;
-                $params[":".$param_id] = $val;
-                $param_id++;
-                $table_str[$tree[$id]->t_id] = $tree[$id]->t_name;
+        
+        if (isset($request_array['AND_MATCH'])) {
+            foreach ($request_array['AND_MATCH'] as $id=>$val) {
+                if (isset($this->columns[$id])) {
+                    $and_ary[] = $this->columns[$id]->t_name.".".$this->columns[$id]->c_name."=:".$param_id;
+                    $params[":".$param_id] = $val;
+                    $param_id++;
+                    $table_str[$this->columns[$id]->t_id] = $this->columns[$id]->t_name;
+                }
+            }
+            $where_ary[] = implode(' AND ', $and_ary);
+        }
+
+        if (isset($request_array['OR_MATCH'])) {
+            foreach ($request_array['OR_MATCH'] as $id=>$val) {
+                if (isset($this->columns[$id])) {
+                    $or_ary[] = $this->columns[$id]->t_name.".".$this->columns[$id]->c_name."=:".$param_id;
+                    $params[":".$param_id] = $val;
+                    $param_id++;
+                    $table_str[$this->columns[$id]->t_id] = $this->columns[$id]->t_name;
+                }
+            }
+            $where_ary[] = "(".implode(' OR ', $or_ary).")";
+        }
+
+        if (isset($request_array['WILDCARD_MATCH'])) {
+            foreach ($request_array['WILDCARD_MATCH'] as $id=>$val) {
+                if (isset($this->columns[$id])) {
+                    $like_ary[] = $this->columns[$id]->t_name.".".$this->columns[$id]->c_name." LIKE :".$param_id;
+                    $params[":".$param_id] = $val;
+                    $param_id++;
+                    $table_str[$this->columns[$id]->t_id] = $this->columns[$id]->t_name;
+                }
+            }
+            $where_ary[] = implode(' AND ', $like_ary);
+        }
+
+        
+        foreach ($request_array['COLUMN_ID'] as $id) {
+            if (isset($this->columns[$id])) {
+                $col_ary[] = $this->columns[$id]->t_name.".".$this->columns[$id]->c_name." as _".$id;
+                $table_str[$this->columns[$id]->t_id] = $this->columns[$id]->t_name;
             }
         }
         
-        $col_str = array();
-        foreach ($col_ids as $id) {
-            if (isset($tree[$id])) {
-                $col_str[] = $tree[$id]->t_name.".".$tree[$id]->c_name." as _".$id;
-                $table_str[$tree[$id]->t_id] = $tree[$id]->t_name;
-            }
-        }
         
-        $sql = "SELECT ".implode(', ', $col_str)." FROM ".implode(', ', $table_str);
+        
+        $sql = "SELECT ".implode(', ', $col_ary)." FROM ".implode(', ', $table_str);
         if (count($where_str) != 0)
-            $sql .= " WHERE ".implode(' AND ', $where_str);
+            $sql .= " WHERE ".implode(' AND ', $where_ary);
         $sth = $this->pdo->prepare($sql);
         $sth->execute($params);
 
@@ -107,6 +141,13 @@ class WebDLMMySQL extends WebDLMBase {
         return $data;
         
     }
+    public function post($request_array, $tree) {
+        return false;
+    }
+    public function delete($request_array, $tree) {
+        return false;
+    }
+    
     
 }
 ?>

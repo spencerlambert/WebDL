@@ -7,7 +7,6 @@ class WebDLMController {
     private $dlms = array();
     private $keys = array();
     private $columns = array();
-    private $columns_by_dlm = array();
         
     public function __construct() {
         $db = ResourceManager::get("DB_MASTER_PDO");
@@ -36,39 +35,7 @@ class WebDLMController {
             $this->keys[$row['DLMTreeColumnID']] = $row['DLMTreeColumnID'];
         }
         
-
-        // Match all columns to a DLM
-        $sql = "SELECT        
-                    c.DLMTreeColumnID,
-                    c.DLMTreeTableID,
-                    t.DLMID,
-                    t.Name as TName,
-                    c.Name as CName,
-                    c.Type,
-                    c.IsKey
-                FROM
-                    ".MASTER_DB_NAME_WITH_PREFIX."DLMTreeTable t,
-                    ".MASTER_DB_NAME_WITH_PREFIX."DLMTreeColumn c
-                WHERE
-                    t.DLMTreeTableID=c.DLMTreeTableID";
-        $sth = $db->prepare($sql);
-        $sth->execute();
-
-        foreach ($sth->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $class = new stdClass();
-            $class->c_id = $row['DLMTreeColumnID'];
-            $class->t_id = $row['DLMTreeTableID'];
-            $class->dlm_id = $row['DLMID'];
-            $class->c_name = $row['CName'];
-            $class->t_name = $row['TName'];
-            $class->type = $row['Type'];
-            $class->is_key = $row['IsKey'];
-            $this->columns[$row['DLMTreeColumnID']] = $class;
-            if (!isset($this->columns_by_dlm[$row['DLMID']]))
-                $this->columns_by_dlm[$row['DLMID']] = array();
-            $this->columns_by_dlm[$row['DLMID']][$row['DLMTreeColumnID']] = $class;
-            
-        }
+        $this->columns = WebDLMColumn::get_columns();
 
     }
     
@@ -81,6 +48,36 @@ class WebDLMController {
      * WILDCARD_MATCH: Uses the % char as a wildcard, working like the LIKE MySQL operator.
      **/
     public function get_dlm_data($request_array) {
+        $required_dlms = $this->get_required_dlms($request_array);
+        if ($required_dlms === false) return false;
+        
+        $data = array();
+        foreach ($required_dlms as $id) {
+            $data[$id] = array();
+            $data[$id]['IS_ONLINE'] = $this->dlms[$id]->is_ready();
+            $data[$id]['DATA'] = "";
+            if ($data[$id]['IS_ONLINE'] === true) 
+                $data[$id]['DATA'] = $this->dlms[$id]->get($request_array);
+        }
+        
+        // dumping for testing...
+        var_dump($data);
+        
+    }
+    
+    public function post_dlm_data($request_array) {
+        $required_dlms = $this->get_required_dlms($request_array);
+        if ($required_dlms === false) return false;
+
+    }    
+
+    public function delete_dlm_data($request_array) {
+        $required_dlms = $this->get_required_dlms($request_array);
+        if ($required_dlms === false) return false;
+
+    }    
+
+    protected function get_required_dlms($request_array) {
         // Get a list of all the DLMs we need to make requests to.
         $required_dlms = array();
         if (isset($request_array['COLUMN_ID'])) {
@@ -106,24 +103,8 @@ class WebDLMController {
                 $required_dlms[$this->columns[$id]->dlm_id] = $this->columns[$id]->dlm_id;
             }
         }
-
         
-        $data = array();
-        foreach ($required_dlms as $id) {
-            $data[$id] = array();
-            $data[$id]['IS_ONLINE'] = $this->dlms[$id]->is_ready();
-            $data[$id]['DATA'] = "";
-            if ($data[$id]['IS_ONLINE'] === true) 
-                $data[$id]['DATA'] = $this->dlms[$id]->get($request_array, $this->columns_by_dlm[$id]);
-        }
-        
-        // dumping for testing...
-        var_dump($data);
-        
-    }
-
-    public function update_data($update_ids, $where_ids) {
-        
+        return $required_dlms;
     }
     
 }
