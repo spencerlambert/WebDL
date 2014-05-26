@@ -114,21 +114,21 @@ class WebDLMMySQL extends WebDLMBase {
             $where_ary[] = implode(' AND ', $like_ary);
         }
         
+        foreach ($request_array['COLUMN_ID'] as $id) {
+            if (isset($this->tree->columns[$id])) {
+                $col_ary[] = $this->tree->columns[$id]->t_name.".".$this->tree->columns[$id]->c_name." as _".$id;
+                $table_ary[$this->tree->columns[$id]->t_id] = $this->tree->columns[$id]->t_name;
+            }
+        }
+
         foreach ($table_ary as $id=>$name) {
             foreach ($this->tree->links['BY_TABLE'] as $link) {
                 // Check if we are getting data from a foreign table that needs linking.
                 if (array_key_exists($this->tree->columns[$link->c_id_f]->t_id, $table_ary))
                     $join_ary[] = $this->tree->columns[$link->c_id]->t_name.".".$this->tree->columns[$link->c_id]->c_name." = ".$this->tree->columns[$link->c_id_f]->t_name.".".$this->tree->columns[$link->c_id_f]->c_name;
             }
-            $where_ary[] = implode(' AND ', $join_ary);
-        }
-
-        
-        foreach ($request_array['COLUMN_ID'] as $id) {
-            if (isset($this->tree->columns[$id])) {
-                $col_ary[] = $this->tree->columns[$id]->t_name.".".$this->tree->columns[$id]->c_name." as _".$id;
-                $table_str[$this->tree->columns[$id]->t_id] = $this->tree->columns[$id]->t_name;
-            }
+            if (count($join_ary) != 0)
+                $where_ary[] = implode(' AND ', $join_ary);
         }
         
         
