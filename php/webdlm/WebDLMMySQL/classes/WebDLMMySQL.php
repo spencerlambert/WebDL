@@ -71,6 +71,7 @@ class WebDLMMySQL extends WebDLMBase {
         $like_ary = array();
         $table_ary = array();
         $col_ary = array();
+        $join_ary = array();
         
         $where_ary = array();
         
@@ -83,7 +84,7 @@ class WebDLMMySQL extends WebDLMBase {
                     $and_ary[] = $this->tree->columns[$id]->t_name.".".$this->tree->columns[$id]->c_name."=:".$param_id;
                     $params[":".$param_id] = $val;
                     $param_id++;
-                    $table_str[$this->tree->columns[$id]->t_id] = $this->tree->columns[$id]->t_name;
+                    $table_ary[$this->tree->columns[$id]->t_id] = $this->tree->columns[$id]->t_name;
                 }
             }
             $where_ary[] = implode(' AND ', $and_ary);
@@ -95,7 +96,7 @@ class WebDLMMySQL extends WebDLMBase {
                     $or_ary[] = $this->tree->columns[$id]->t_name.".".$this->tree->columns[$id]->c_name."=:".$param_id;
                     $params[":".$param_id] = $val;
                     $param_id++;
-                    $table_str[$this->tree->columns[$id]->t_id] = $this->tree->columns[$id]->t_name;
+                    $table_ary[$this->tree->columns[$id]->t_id] = $this->tree->columns[$id]->t_name;
                 }
             }
             $where_ary[] = "(".implode(' OR ', $or_ary).")";
@@ -107,10 +108,19 @@ class WebDLMMySQL extends WebDLMBase {
                     $like_ary[] = $this->tree->columns[$id]->t_name.".".$this->tree->columns[$id]->c_name." LIKE :".$param_id;
                     $params[":".$param_id] = $val;
                     $param_id++;
-                    $table_str[$this->tree->columns[$id]->t_id] = $this->tree->columns[$id]->t_name;
+                    $table_ary[$this->tree->columns[$id]->t_id] = $this->tree->columns[$id]->t_name;
                 }
             }
             $where_ary[] = implode(' AND ', $like_ary);
+        }
+        
+        foreach ($table_ary as $id=>$name) {
+            foreach ($this->tree->links['BY_TABLE'] as $link) {
+                // Check if we are getting data from a foreign table that needs linking.
+                if (array_key_exists($this->tree->columns[$link->c_id_f]->t_id, $table_ary))
+                    $join_ary[] = $this->tree->columns[$link->c_id]->t_name.".".$this->tree->columns[$link->c_id]->c_name." = ".$this->tree->columns[$link->c_id_f]->t_name.".".$this->tree->columns[$link->c_id_f]->c_name;
+            }
+            $where_ary[] = implode(' AND ', $join_ary);
         }
 
         
@@ -123,7 +133,7 @@ class WebDLMMySQL extends WebDLMBase {
         
         
         
-        $sql = "SELECT ".implode(', ', $col_ary)." FROM ".implode(', ', $table_str);
+        $sql = "SELECT ".implode(', ', $col_ary)." FROM ".implode(', ', $table_ary);
         if (count($where_ary) != 0)
             $sql .= " WHERE ".implode(' AND ', $where_ary);
         $sth = $this->pdo->prepare($sql);
