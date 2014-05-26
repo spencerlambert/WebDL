@@ -1,9 +1,9 @@
 <?php
 class WebDLMTree {
-    protected $tables = array();
-    protected $columns = array();
-    protected $links = array();
-    protected $dlmid;
+    public $tables = array();
+    public $columns = array();
+    public $links = array();
+    public $dlmid;
     
     // If you don't give a DLM ID, then you get a tree that contains ALL data trees.
     public function __construct($dlmid = null) {
