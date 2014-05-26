@@ -23,9 +23,9 @@ class WebDLMTreeLink {
             $sql = "SELECT
                         l.DLMTreeColumnID,
                         l.DLMTreeColumnIDForeign,
-                        l.Type
+                        l.Type,
                         c.DLMTreeTableID,
-                        t.DLMID,
+                        t.DLMID
                     FROM
                         ".MASTER_DB_NAME_WITH_PREFIX."DLMTreeLink l,
                         ".MASTER_DB_NAME_WITH_PREFIX."DLMTreeColumn c,
@@ -40,9 +40,9 @@ class WebDLMTreeLink {
             $sql = "SELECT
                         l.DLMTreeColumnID,
                         l.DLMTreeColumnIDForeign,
-                        l.Type
+                        l.Type,
                         c.DLMTreeTableID,
-                        t.DLMID,
+                        t.DLMID
                     FROM
                         ".MASTER_DB_NAME_WITH_PREFIX."DLMTreeLink l,
                         ".MASTER_DB_NAME_WITH_PREFIX."DLMTreeColumn c,
