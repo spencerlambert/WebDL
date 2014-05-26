@@ -141,10 +141,10 @@ class WebDLMMySQL extends WebDLMBase {
         return $data;
         
     }
-    public function post($request_array, $tree) {
+    public function post($request_array) {
         return false;
     }
-    public function delete($request_array, $tree) {
+    public function delete($request_array) {
         return false;
     }
     
