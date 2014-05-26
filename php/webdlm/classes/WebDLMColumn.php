@@ -1,5 +1,5 @@
 <?php
-class WebDLMColumn (
+class WebDLMColumn {
 
 
     static public function get_columns($dlmid = null) {
@@ -60,5 +60,5 @@ class WebDLMColumn (
         }
     }
    
-)
+}
 ?>
