@@ -36,15 +36,22 @@ abstract class WebDLMBase {
     }
 
     /*******
-     * $request_array:
-     * Two dimensional array with following indexes
-     * COLUMN_ID: An array of the column ids to be returned.
-     * AND_MATCH: An array of column ids and matched to preform for fetching the row(s).
-     * OR_MATCH: Like AND_MATCHES, but with the OR operator between each.
-     * WILDCARD_MATCH: Uses the % char as a wildcard, working like the LIKE MySQL operator.
+     * These are the functions that every WebDLM must implement.
+     *
+     * is_ready() is called by the WebDLMController prior to sending a request.
+     * It needs to return true or false.
+     *
+     * get() is called to retrieve data from the WebDLM, for a database connection
+     * this is a SELECT call.
+     *
+     * post() is for both adds and updates.  The WebDLM implementation is
+     * responsible for figuring out which one it needs to do.  Works like a
+     * database INSERT and UPDATE. The DLM may return false if adds or updates are
+     * not allowed.
+     *
+     * delete() will delete a record from the data source.  The DLM can return false
+     * if the delete feature is not implmented or allowed.
      **/    
-    // This function is called by the DLM Controller, prior to fetching any data.
-    // If the connection is good to the data source, the it needs to return TRUE.
     abstract public function is_ready();
     abstract public function get($request);  // Retrives data
     abstract public function post($request); // Both adds and updates data
