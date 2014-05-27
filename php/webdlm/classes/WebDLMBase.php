@@ -31,6 +31,8 @@ abstract class WebDLMBase {
             }
         }
         
+        // Get the data tree for this DLM.  The data tree helps the DLM figure out
+        // how to join data with other tables.
         $this->tree = new WebDLMTree($this->dlm_id);
         
     }
