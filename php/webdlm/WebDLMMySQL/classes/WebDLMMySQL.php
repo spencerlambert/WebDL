@@ -110,7 +110,7 @@ class WebDLMMySQL extends WebDLMBase {
             $where_ary[] = implode(' AND ', $and_ary);
         if (count($or_ary) != 0)
             $where_ary[] = "(".implode(' OR ', $or_ary).")";
-        if (count($like_ary != 0))
+        if (count($like_ary) != 0)
             $where_ary[] = implode(' AND ', $like_ary);
 
         // Build the SELECT columns part of the query.
@@ -124,17 +124,15 @@ class WebDLMMySQL extends WebDLMBase {
             $table_ary[$this->tree->columns[$col->c_id]->t_id] = $this->tree->columns[$col->c_id]->t_name;
         }
 
-        foreach ($table_ary as $id=>$name) {
-            foreach ($this->tree->links['BY_TABLE'] as $links) {
-                // Check if we are getting data from a foreign table that needs linking.
-                foreach ($links as $link) {
-                    if (array_key_exists($this->tree->columns[$link->c_id_f]->t_id, $table_ary))
-                        $join_ary[] = $this->tree->columns[$link->c_id]->t_name.".".$this->tree->columns[$link->c_id]->c_name." = ".$this->tree->columns[$link->c_id_f]->t_name.".".$this->tree->columns[$link->c_id_f]->c_name;
-                }
+        foreach ($this->tree->links['BY_TABLE'] as $links) {
+            // Check if we are getting data from a foreign table that needs linking.
+            foreach ($links as $link) {
+                if (array_key_exists($this->tree->columns[$link->c_id_f]->t_id, $table_ary))
+                    $join_ary[] = $this->tree->columns[$link->c_id]->t_name.".".$this->tree->columns[$link->c_id]->c_name." = ".$this->tree->columns[$link->c_id_f]->t_name.".".$this->tree->columns[$link->c_id_f]->c_name;
             }
-            if (count($join_ary) != 0)
-                $where_ary[] = implode(' AND ', $join_ary);
         }
+        if (count($join_ary) != 0)
+            $where_ary[] = implode(' AND ', $join_ary);
         
         
         // Complete the query
