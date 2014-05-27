@@ -25,43 +25,24 @@ class WebDLMController {
 
     }
     
-    /*******
-     * $request_array:
-     * Two dimensional array with following indexes
-     * COLUMN_ID: An array of the column ids to be returned.
-     * AND_MATCH: An array of column ids and matched to preform for fetching the row(s).
-     * OR_MATCH: Like AND_MATCHES, but with the OR operator between each.
-     * WILDCARD_MATCH: Uses the % char as a wildcard, working like the LIKE MySQL operator.
-     **/
-    public function get_dlm_data($request_array) {
-        $required_dlms = $this->tree->get_required_dlms($request_array);
+    public function dlm_request($request) {
+        $type = strtolower($request->get_type());
+        $required_dlms = $this->tree->get_required_dlms($request);
         if ($required_dlms === false) return false;
-        
+
         $data = array();
         foreach ($required_dlms as $id) {
             $data[$id] = array();
             $data[$id]['IS_ONLINE'] = $this->dlms[$id]->is_ready();
             $data[$id]['DATA'] = "";
             if ($data[$id]['IS_ONLINE'] === true) 
-                $data[$id]['DATA'] = $this->dlms[$id]->get($request_array);
+                $data[$id]['DATA'] = $this->dlms[$id]->$type($request);
         }
         
         // dumping for testing...
         var_dump($data);
         
     }
-    
-    public function post_dlm_data($request_array) {
-        $required_dlms = $this->get_required_dlms($request_array);
-        if ($required_dlms === false) return false;
-
-    }    
-
-    public function delete_dlm_data($request_array) {
-        $required_dlms = $this->get_required_dlms($request_array);
-        if ($required_dlms === false) return false;
-
-    }    
     
 }
 ?>

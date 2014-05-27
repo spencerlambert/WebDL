@@ -79,9 +79,9 @@ abstract class WebDLMBase {
     // This function is called by the DLM Controller, prior to fetching any data.
     // If the connection is good to the data source, the it needs to return TRUE.
     abstract public function is_ready();
-    abstract public function get($request_array);  // Retrives data
-    abstract public function post($request_array); // Both adds and updates data
-    abstract public function delete($request_array); // Removed data
+    abstract public function get($request);  // Retrives data
+    abstract public function post($request); // Both adds and updates data
+    abstract public function delete($request); // Removed data
 
     
 

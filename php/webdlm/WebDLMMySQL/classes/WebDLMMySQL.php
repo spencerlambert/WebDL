@@ -65,7 +65,7 @@ class WebDLMMySQL extends WebDLMBase {
      **/    
     // TODO: Make the WHERE part smarted to know required table joins.
     // TODO: WHERE also needs to include the Connector Logic.
-    public function get($request_array) {
+    public function get($request) {
         $and_ary = array();
         $or_ary = array();
         $like_ary = array();
@@ -77,48 +77,51 @@ class WebDLMMySQL extends WebDLMBase {
         
         $params = array();
         $param_id = 0;
+                
+        $r_columns = $request->get_columns();
+        $r_matches = $request->get_matches();
         
-        if (isset($request_array['AND_MATCH'])) {
-            foreach ($request_array['AND_MATCH'] as $id=>$val) {
-                if (isset($this->tree->columns[$id])) {
-                    $and_ary[] = $this->tree->columns[$id]->t_name.".".$this->tree->columns[$id]->c_name."=:".$param_id;
-                    $params[":".$param_id] = $val;
-                    $param_id++;
-                    $table_ary[$this->tree->columns[$id]->t_id] = $this->tree->columns[$id]->t_name;
-                }
+        foreach ($r_matches as $match) {
+            // Check if this part of the request applies to this DLM instance.
+            if (!isset($this->tree->columns[$match->c_id]))
+                continue;
+            
+            // Sort out the different parts of the WHERE statement
+            switch ($match->type) {
+                case "AND":
+                    $and_ary[] = $this->tree->columns[$match->c_id]->t_name.".".$this->tree->columns[$match->c_id]->c_name."=:".$param_id;
+                    break;
+                case "OR":
+                    $or_ary[] = $this->tree->columns[$match->c_id]->t_name.".".$this->tree->columns[$match->c_id]->c_name."=:".$param_id;
+                    break;
+                case "WILDCARD":
+                    $like_ary[] = $this->tree->columns[$match->c_id]->t_name.".".$this->tree->columns[$match->c_id]->c_name." LIKE :".$param_id;
+                    break;
             }
+            // Make a list of needed tables;
+            $table_ary[$this->tree->columns[$match->c_id]->t_id] = $this->tree->columns[$match->c_id]->t_name;
+            
+            // Set and increment the param name, so that each is unique.
+            $params[":".$param_id] = $match->m_val;
+            $param_id++;
+        }
+        
+        // Add the WHERE parts the the where array;
+        if (count($and_ary) != 0)
             $where_ary[] = implode(' AND ', $and_ary);
-        }
-
-        if (isset($request_array['OR_MATCH'])) {
-            foreach ($request_array['OR_MATCH'] as $id=>$val) {
-                if (isset($this->tree->columns[$id])) {
-                    $or_ary[] = $this->tree->columns[$id]->t_name.".".$this->tree->columns[$id]->c_name."=:".$param_id;
-                    $params[":".$param_id] = $val;
-                    $param_id++;
-                    $table_ary[$this->tree->columns[$id]->t_id] = $this->tree->columns[$id]->t_name;
-                }
-            }
+        if (count($or_ary) != 0)
             $where_ary[] = "(".implode(' OR ', $or_ary).")";
-        }
-
-        if (isset($request_array['WILDCARD_MATCH'])) {
-            foreach ($request_array['WILDCARD_MATCH'] as $id=>$val) {
-                if (isset($this->tree->columns[$id])) {
-                    $like_ary[] = $this->tree->columns[$id]->t_name.".".$this->tree->columns[$id]->c_name." LIKE :".$param_id;
-                    $params[":".$param_id] = $val;
-                    $param_id++;
-                    $table_ary[$this->tree->columns[$id]->t_id] = $this->tree->columns[$id]->t_name;
-                }
-            }
+        if (count($like_ary != 0))
             $where_ary[] = implode(' AND ', $like_ary);
-        }
-        
-        foreach ($request_array['COLUMN_ID'] as $id) {
-            if (isset($this->tree->columns[$id])) {
-                $col_ary[] = $this->tree->columns[$id]->t_name.".".$this->tree->columns[$id]->c_name." as _".$id;
-                $table_ary[$this->tree->columns[$id]->t_id] = $this->tree->columns[$id]->t_name;
-            }
+
+        // Build the SELECT columns part of the query.
+        foreach ($c_matches as $col) {
+            // Check if this part of the request applies to this DLM instance.
+            if (!isset($this->tree->columns[$col->c_id]))
+                continue;
+            
+            $col_ary[$col->c_id] = $this->tree->columns[$col->c_id]->t_name.".".$this->tree->columns[$col->c_id]->c_name." as _".$col->c_id;
+            $table_ary[$this->tree->columns[$col->c_id]->t_id] = $this->tree->columns[$$col->c_id]->t_name;
         }
 
         foreach ($table_ary as $id=>$name) {
@@ -134,13 +137,14 @@ class WebDLMMySQL extends WebDLMBase {
         }
         
         
-        
+        // Complete the query
         $sql = "SELECT ".implode(', ', $col_ary)." FROM ".implode(', ', $table_ary);
         if (count($where_ary) != 0)
             $sql .= " WHERE ".implode(' AND ', $where_ary);
         $sth = $this->pdo->prepare($sql);
         $sth->execute($params);
 
+        // Run the query
         $data = array();
         foreach ($sth->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $tmp = array();
@@ -153,10 +157,10 @@ class WebDLMMySQL extends WebDLMBase {
         return $data;
         
     }
-    public function post($request_array) {
+    public function post($request) {
         return false;
     }
-    public function delete($request_array) {
+    public function delete($request) {
         return false;
     }
     

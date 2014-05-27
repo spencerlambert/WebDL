@@ -17,38 +17,30 @@ class WebDLMTree {
     }
     
     
-    public function get_required_dlms($request_array) {
+    public function get_required_dlms($request) {
 
         // This function should only be called when the tree contains all trees.
         if ($this->dlmid !== null) {
             UserMessage::output("WebDLMTree::get_required_dlms() is being called by a tree that does not contain all DLM trees.  Can't do that...", "WebDLMTree.php");
             return false;
         }
+        
+        $r_columns = $request->get_columns();
+        $r_matches = $request->get_matches();
 
         // Get a list of all the DLMs we need to make requests to.
         $required_dlms = array();
-        if (isset($request_array['COLUMN_ID'])) {
-            foreach ($request_array['COLUMN_ID'] as $id) {
-                $required_dlms[$this->columns[$id]->dlm_id] = $this->columns[$id]->dlm_id;
-            }
-        } else {
-            UserMessage::output('No COLUMN_ID in the $request_array, at least one column id needs to be included.', 'WebDLMController.php');
-            return false;
+        foreach ($r_columns as $col) {
+            $required_dlms[$this->columns[$col->c_id]->dlm_id] = $this->columns[$col->c_id]->dlm_id;
         }
-        if (isset($request_array['AND_MATCH'])) {
-            foreach ($request_array['AND_MATCH'] as $id=>$val) {
-                $required_dlms[$this->columns[$id]->dlm_id] = $this->columns[$id]->dlm_id;
-            }
+        
+        if (count($required_dlms) == 0) {
+            UserMessage::output('No COLUMN_ID in the WebDLMRequest object, at least one column id needs to be pushed.', 'WebDLMTree.php');
+            return false;            
         }
-        if (isset($request_array['OR_MATCH'])) {
-            foreach ($request_array['OR_MATCH'] as $id=>$val) {
-                $required_dlms[$this->columns[$id]->dlm_id] = $this->columns[$id]->dlm_id;
-            }
-        }
-        if (isset($request_array['WILDCARD_MATCH'])) {
-            foreach ($request_array['WILDCARD_MATCH'] as $id=>$val) {
-                $required_dlms[$this->columns[$id]->dlm_id] = $this->columns[$id]->dlm_id;
-            }
+        
+        foreach ($m_columns as $col) {
+            $required_dlms[$this->columns[$col->c_id]->dlm_id] = $this->columns[$col->c_id]->dlm_id;
         }
         
         return $required_dlms;
