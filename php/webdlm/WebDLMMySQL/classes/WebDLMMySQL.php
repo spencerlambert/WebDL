@@ -77,10 +77,9 @@ class WebDLMMySQL extends WebDLMBase {
         
         $params = array();
         $param_id = 0;
-                
-        $r_columns = $request->get_columns();
-        $r_matches = $request->get_matches();
         
+        // Build the WHERE part of the query
+        $r_matches = $request->get_matches();
         foreach ($r_matches as $match) {
             // Check if this part of the request applies to this DLM instance.
             if (!isset($this->tree->columns[$match->c_id]))
@@ -115,13 +114,14 @@ class WebDLMMySQL extends WebDLMBase {
             $where_ary[] = implode(' AND ', $like_ary);
 
         // Build the SELECT columns part of the query.
-        foreach ($r_matches as $col) {
+        $r_columns = $request->get_columns();
+        foreach ($r_columns as $col) {
             // Check if this part of the request applies to this DLM instance.
             if (!isset($this->tree->columns[$col->c_id]))
                 continue;
             
             $col_ary[$col->c_id] = $this->tree->columns[$col->c_id]->t_name.".".$this->tree->columns[$col->c_id]->c_name." as _".$col->c_id;
-            $table_ary[$this->tree->columns[$col->c_id]->t_id] = $this->tree->columns[$$col->c_id]->t_name;
+            $table_ary[$this->tree->columns[$col->c_id]->t_id] = $this->tree->columns[$col->c_id]->t_name;
         }
 
         foreach ($table_ary as $id=>$name) {
