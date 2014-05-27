@@ -26,7 +26,7 @@ class WebDLMController {
     }
     
     public function dlm_request($request) {
-        $type = strtolower($request->get_type());
+        $type = $request->get_type();
         $required_dlms = $this->tree->get_required_dlms($request);
         if ($required_dlms === false) return false;
 
@@ -35,8 +35,19 @@ class WebDLMController {
             $data[$id] = array();
             $data[$id]['IS_ONLINE'] = $this->dlms[$id]->is_ready();
             $data[$id]['DATA'] = "";
-            if ($data[$id]['IS_ONLINE'] === true) 
-                $data[$id]['DATA'] = $this->dlms[$id]->$type($request);
+            if ($data[$id]['IS_ONLINE'] === true) {
+                switch ($request->get_type()) {
+                    case "GET":
+                        $data[$id]['DATA'] = $this->dlms[$id]->get($request);
+                        break;
+                    case "POST":
+                        $data[$id]['DATA'] = $this->dlms[$id]->post($request);
+                        break;
+                    case "DELETE":
+                        $data[$id]['DATA'] = $this->dlms[$id]->delete($request);
+                        break;
+                }
+            }
         }
         
         // dumping for testing...

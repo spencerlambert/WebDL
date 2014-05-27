@@ -39,7 +39,7 @@ class WebDLMTree {
             return false;            
         }
         
-        foreach ($m_columns as $col) {
+        foreach ($r_matches as $col) {
             $required_dlms[$this->columns[$col->c_id]->dlm_id] = $this->columns[$col->c_id]->dlm_id;
         }
         
