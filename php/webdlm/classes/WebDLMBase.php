@@ -7,10 +7,6 @@ abstract class WebDLMBase {
     protected $dlm_id;
     protected $config_list = array();
     protected $config = array();
-    protected $connectors = array();
-    protected $connectors_by_key = array();
-    protected $connectors_by_foreign_key = array();
-    
     protected $tree;
     
     protected function __construct($dlm_id) {
@@ -26,36 +22,7 @@ abstract class WebDLMBase {
         
         foreach ($sth->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $this->config[$row['Name']] = $row['Value'];
-        }
-
-        // Should be move the the WebDLMConnector class as a static function with dlm_id as the arg.
-        $sql = "SELECT
-                    con.ConnectorID
-                FROM
-                    ".MASTER_DB_NAME_WITH_PREFIX."DLMConnector as con,
-                    ".MASTER_DB_NAME_WITH_PREFIX."DLMTreeColumn as t,
-                    ".MASTER_DB_NAME_WITH_PREFIX."DLMTreeTable as c,
-                WHERE
-                    t.DLMID=:id AND
-                    t.DLMTreeTableID=c.DLMTreeTableID AND
-                    con.DLMTreeColumnIDPrimary=c.DLMTreeColumnID";
-        $params = array(':id'=>$this->dlm_id);
-        $sth = $db->prepare($sql);
-        $sth->execute($params);
-        
-        foreach ($sth->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $this->connectors[$row['ConnectorID']] = new WebDLMConnector($row['ConnectorID']);
-            
-            if (!isset($this->connectors_by_key[$this->connectors[$row['ConnectorID']]->get_primary_key_name]))
-                $this->connectors_by_key[$this->connectors[$row['ConnectorID']]->get_primary_key_name] = array();
-            $this->connectors_by_key[$this->connectors[$row['ConnectorID']]->get_primary_key_name][$row['ConnectorID']] = $this->connectors[$row['ConnectorID']];
-
-            if (!isset($this->connectors_by_foreign_key[$this->connectors[$row['ConnectorID']]->get_foreign_key_name]))
-                $this->connectors_by_foreign_key[$this->connectors[$row['ConnectorID']]->get_foreign_key_name] = array();
-            $this->connectors_by_foreign_key[$this->connectors[$row['ConnectorID']]->get_foreign_key_name][$row['ConnectorID']] = $this->connectors[$row['ConnectorID']];
-
-        }
-        
+        }        
         
         // See if any configs are missing.
         foreach ($this->config_list as $name) {

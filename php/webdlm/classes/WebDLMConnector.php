@@ -1,9 +1,9 @@
 <?php
 class WebDLMConnector {
     protected $connector_id;
-    protected $name;
-    protected $dlm_column_primary;
-    protected $dlm_column_foreign;
+    public $name;
+    public $c_id;
+    public $c_id_f;
     
     protected $type;
     protected $key_type;
@@ -23,8 +23,8 @@ class WebDLMConnector {
         $row = $sth->fetch(PDO::FETCH_ASSOC);
         if (isset($row['ConnectorID'])) {
             $this->name = $row['ConnectorName'];
-            $this->dlm_column_primary = $row['DLMTreeColumnIDPrimary']
-            $this->dlm_column_foreign = $row['DLMTreeColumnIDForeign'];
+            $this->c_id = $row['DLMTreeColumnIDPrimary']
+            $this->c_id_f = $row['DLMTreeColumnIDForeign'];
             $this->type = $row['Type'];
             $this->key_type = $row['KeyType'];
             $this->sql_key_table = MASTER_DB_NAME_WITH_PREFIX."DLMConnector".$this->type.$this->key_type;
@@ -34,13 +34,38 @@ class WebDLMConnector {
         }
     }
     
-    public function get_primary_key_name() {
-        return $this->primary_key_name;
-    }
+    // Creates an array of all connectors sorted in various ways for the DLM controller.
+    static public function get_connectors($dlm_id) {
+        // Should be move the the WebDLMConnector class as a static function with dlm_id as the arg.
+        $sql = "SELECT
+                    con.ConnectorID
+                FROM
+                    ".MASTER_DB_NAME_WITH_PREFIX."DLMConnector as con,
+                    ".MASTER_DB_NAME_WITH_PREFIX."DLMTreeColumn as t,
+                    ".MASTER_DB_NAME_WITH_PREFIX."DLMTreeTable as c,
+                WHERE
+                    t.DLMID=:id AND
+                    t.DLMTreeTableID=c.DLMTreeTableID AND
+                    con.DLMTreeColumnIDPrimary=c.DLMTreeColumnID";
+        $params = array(':id'=>$this->dlm_id);
+        $sth = $db->prepare($sql);
+        $sth->execute($params);
+        
+        foreach ($sth->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $this->connectors[$row['ConnectorID']] = new WebDLMConnector($row['ConnectorID']);
+            
+            if (!isset($this->connectors_by_key[$this->connectors[$row['ConnectorID']]->get_primary_key_name]))
+                $this->connectors_by_key[$this->connectors[$row['ConnectorID']]->get_primary_key_name] = array();
+            $this->connectors_by_key[$this->connectors[$row['ConnectorID']]->get_primary_key_name][$row['ConnectorID']] = $this->connectors[$row['ConnectorID']];
 
-    public function get_foreign_key_name() {
-        return $this->foreign_key_name;
+            if (!isset($this->connectors_by_foreign_key[$this->connectors[$row['ConnectorID']]->get_foreign_key_name]))
+                $this->connectors_by_foreign_key[$this->connectors[$row['ConnectorID']]->get_foreign_key_name] = array();
+            $this->connectors_by_foreign_key[$this->connectors[$row['ConnectorID']]->get_foreign_key_name][$row['ConnectorID']] = $this->connectors[$row['ConnectorID']];
+
+        }
+        
     }
+    
     
     public function update($key, $foreign_key) {
         $db = ResourceManager::get("DB_MASTER_PDO");
