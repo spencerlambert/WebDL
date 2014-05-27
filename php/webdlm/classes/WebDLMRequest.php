@@ -1,6 +1,6 @@
 <?php
 class WebDLMRequest {
-    protected $type;
+    protected $type = "GET";
     protected $columns = array();
     protected $match_on = array();
     
