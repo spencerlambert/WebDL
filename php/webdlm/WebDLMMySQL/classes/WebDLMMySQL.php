@@ -115,7 +115,7 @@ class WebDLMMySQL extends WebDLMBase {
             $where_ary[] = implode(' AND ', $like_ary);
 
         // Build the SELECT columns part of the query.
-        foreach ($c_matches as $col) {
+        foreach ($r_matches as $col) {
             // Check if this part of the request applies to this DLM instance.
             if (!isset($this->tree->columns[$col->c_id]))
                 continue;
