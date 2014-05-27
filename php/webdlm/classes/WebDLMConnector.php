@@ -35,24 +35,32 @@ class WebDLMConnector {
     }
     
     // Creates an array of all connectors sorted in various ways for the DLM controller.
-    static public function get_connectors($dlm_id) {
-        // Should be move the the WebDLMConnector class as a static function with dlm_id as the arg.
+    static public function get_connectors($dlm_id) {        
+        $db = ResourceManager::get("DB_MASTER_PDO");
+
+
+        // TODO: Thinking about how to best proceed with the connectors.
+        // TODO: This function still needs work and needs to be converted over from when it was in the WebDLMBase class
+        $connectors = array();
+        $connectors['BY_ID'] = array();
+        $connectors['BY_TABLE_TO_TABLE'] = array();
+
         $sql = "SELECT
-                    con.ConnectorID
+                    con.ConnectorID,
+                    t.DLMID,
+                    con.DLMTreeColumnIDPrimary
                 FROM
                     ".MASTER_DB_NAME_WITH_PREFIX."DLMConnector as con,
                     ".MASTER_DB_NAME_WITH_PREFIX."DLMTreeColumn as t,
                     ".MASTER_DB_NAME_WITH_PREFIX."DLMTreeTable as c,
                 WHERE
-                    t.DLMID=:id AND
                     t.DLMTreeTableID=c.DLMTreeTableID AND
                     con.DLMTreeColumnIDPrimary=c.DLMTreeColumnID";
-        $params = array(':id'=>$this->dlm_id);
         $sth = $db->prepare($sql);
-        $sth->execute($params);
+        $sth->execute();
         
         foreach ($sth->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $this->connectors[$row['ConnectorID']] = new WebDLMConnector($row['ConnectorID']);
+            $connectors['BY_ID'][$row['ConnectorID']] = new WebDLMConnector($row['ConnectorID']);
             
             if (!isset($this->connectors_by_key[$this->connectors[$row['ConnectorID']]->get_primary_key_name]))
                 $this->connectors_by_key[$this->connectors[$row['ConnectorID']]->get_primary_key_name] = array();
@@ -63,6 +71,8 @@ class WebDLMConnector {
             $this->connectors_by_foreign_key[$this->connectors[$row['ConnectorID']]->get_foreign_key_name][$row['ConnectorID']] = $this->connectors[$row['ConnectorID']];
 
         }
+        
+        return $connectors;
         
     }
     

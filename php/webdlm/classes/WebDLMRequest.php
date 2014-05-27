@@ -29,11 +29,19 @@ class WebDLMRequest {
         return true;
     }
     
+    public function is_column_included($c_id) {
+        return array_key_exists($c_id, $this->columns);
+    }
+    
     public function push_column($c_id, $c_val='') {
+        // If the column has already been pushed send warning.
+        if (isset($this->columns[$c_id]))
+            UserMessage::output('Column '.$c_id.' has already been pushed to the DLM request.  Be careful if this is a POST request, as the last pushed value will be the only one saved.', 'WebDLMRequest.php');            
         $class = new stdClass();
         $class->c_id = $c_id;
         $class->c_val = $c_val;
-        $this->columns[] = $class;
+        // Can't have same column id twice.  The last pushed value becomes the set value on POST requests.
+        $this->columns[$c_id] = $class;
     }
     
     // Currently valid types: AND, OR, and WILDCARD
