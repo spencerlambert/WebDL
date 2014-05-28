@@ -50,8 +50,9 @@ class WebDLMController {
                 }
             }
             
-            //Run any DLMs that have a primary key connectot table in the match first.
+            //Run any DLMs that have a primary key connector table in the match first.
             $match_tables = $this->tree->get_match_tables($request);
+            $linked_tables = array();
             $first_dlms = array();
             foreach ($needed_connectors as $connectors) {
                 foreach ($connectors as $connector) {
@@ -63,6 +64,7 @@ class WebDLMController {
                             $request->push_column($connector->c_id);
                         if (!$request->is_column_included($connector->c_id_f))
                             $request->push_column($connector->c_id_f);
+                        $linked_tables[$this->tree->columns[$connector->c_id]->t_id] = $this->tree->columns[$connector->c_id]->t_id;
                     }
                 }
             }
@@ -85,6 +87,46 @@ class WebDLMController {
                     }
                 }
             }
+            
+            //Run any DLMs that have a foreign key connector table in the match first.
+            $second_dlms = array();
+            foreach ($needed_connectors as $connectors) {
+                foreach ($connectors as $connector) {
+                    if (in_array($this->tree->columns[$connector->c_id_f]->t_id, $match_tables) && !in_array($this->tree->columns[$connector->c_id_f]->t_id, $linked_tables)) {
+                        $second_dlms[$this->tree->columns[$connector->c_id_f]->dlm_id] = $this->tree->columns[$connector->c_id_f]->dlm_id;
+                        // DANGER! If this was a POST it could wipe out all the data in a table, because of the
+                        // empty value being used in push_column().  Need to rethink for POST connects.
+                        if (!$request->is_column_included($connector->c_id))
+                            $request->push_column($connector->c_id);
+                        if (!$request->is_column_included($connector->c_id_f))
+                            $request->push_column($connector->c_id_f);
+                    }
+                }
+            }
+            // TODO: Not liking all the nested foreach loops.... yuck.  Got to think of something better and faster.
+            foreach ($first_dlms as $dlm_id) {
+                if (isset($data[$dlm_id])) continue; // Don't rerun any dlm that has already been run
+                $data[$dlm_id] = $this->run_one_dlm($dlm_id, $request);
+                // Load any needed matches for connected table,
+                foreach ($data[$dlm_id]['DATA'] as $row) {
+                    foreach ($needed_connectors as $connector) {
+                        foreach ($connectors as $connector) {
+                            if (isset($row[$connector->c_id_f])) {
+                                foreach($connector->get_primary_key($row[$connector->c_id_f]) as $val_p) {
+                                    // Add each key as a match value so we get the needed rows when
+                                    // the other DLM is run.
+                                    $request->push_match($connector->c_id, $val_p, 'OR');
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            
+            
+            
+            
         }
         
         
