@@ -55,7 +55,7 @@ class WebDLMController {
             $first_dlms = array();
             foreach ($needed_connectors as $connector) {
                 if (in_array($this->tree->columns[$connector->c_id]->t_id, $match_tables)) {
-                    $first_dlms[$this->tree->columns[$connector->c_id]->dlm_id] = $this->tree->columns[$connector->c_id]->dlm_id
+                    $first_dlms[$this->tree->columns[$connector->c_id]->dlm_id] = $this->tree->columns[$connector->c_id]->dlm_id;
                     // DANGER! If this was a POST it could wipe out all the data in a table, because of the
                     // empty value being used in push_column().  Need to rethink for POST connects.
                     if (!$request->is_column_included($connector->c_id))
