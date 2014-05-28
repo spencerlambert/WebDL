@@ -55,6 +55,10 @@ class WebDLMRequest {
         $class->c_id = $c_id;
         $class->m_val = $m_val;
         $class->type = $type;
+        // Check for identical matches, and skip if found
+        foreach ($this->match_on as $match) {
+            if ($match->c_id == $class->c_id && $match->m_val == $class->m_val && $match->type == $class->type) return true;
+        }
         $this->match_on[] = $class;
         return true;
     }
