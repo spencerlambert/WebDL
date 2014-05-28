@@ -23,7 +23,7 @@ class WebDLMConnector {
         $row = $sth->fetch(PDO::FETCH_ASSOC);
         if (isset($row['ConnectorID'])) {
             $this->name = $row['ConnectorName'];
-            $this->c_id = $row['DLMTreeColumnIDPrimary']
+            $this->c_id = $row['DLMTreeColumnIDPrimary'];
             $this->c_id_f = $row['DLMTreeColumnIDForeign'];
             $this->type = $row['Type'];
             $this->key_type = $row['KeyType'];
