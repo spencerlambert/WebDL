@@ -134,8 +134,7 @@ class WebDLMController {
             $data[$dlm_id] = $this->run_one_dlm($dlm_id, $request);
         }
         
-        $return ($data);
-        
+        return $data;
     }
     
     private function run_one_dlm($dlm_id, $request) {
