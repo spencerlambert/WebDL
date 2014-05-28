@@ -145,6 +145,8 @@ class WebDLMMySQL extends WebDLMBase {
         $sql = "SELECT ".implode(', ', $col_ary)." FROM ".implode(', ', $table_ary);
         if (count($where_ary) != 0)
             $sql .= " WHERE ".implode(' AND ', $where_ary);
+        // DEBUG: adding limit for testing
+        $sql .= " LIMIT 5";
         $sth = $this->pdo->prepare($sql);
         $sth->execute($params);
 
