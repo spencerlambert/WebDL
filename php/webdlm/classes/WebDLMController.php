@@ -53,15 +53,17 @@ class WebDLMController {
             //Run any DLMs that have a primary key connectot table in the match first.
             $match_tables = $this->tree->get_match_tables($request);
             $first_dlms = array();
-            foreach ($needed_connectors as $connector) {
-                if (in_array($this->tree->columns[$connector->c_id]->t_id, $match_tables)) {
-                    $first_dlms[$this->tree->columns[$connector->c_id]->dlm_id] = $this->tree->columns[$connector->c_id]->dlm_id;
-                    // DANGER! If this was a POST it could wipe out all the data in a table, because of the
-                    // empty value being used in push_column().  Need to rethink for POST connects.
-                    if (!$request->is_column_included($connector->c_id))
-                        $request->push_column($connector->c_id);
-                    if (!$request->is_column_included($connector->c_id_f))
-                        $request->push_column($connector->c_id_f);
+            foreach ($needed_connectors as $connectors) {
+                foreach ($connectors as $connector) {
+                    if (in_array($this->tree->columns[$connector->c_id]->t_id, $match_tables)) {
+                        $first_dlms[$this->tree->columns[$connector->c_id]->dlm_id] = $this->tree->columns[$connector->c_id]->dlm_id;
+                        // DANGER! If this was a POST it could wipe out all the data in a table, because of the
+                        // empty value being used in push_column().  Need to rethink for POST connects.
+                        if (!$request->is_column_included($connector->c_id))
+                            $request->push_column($connector->c_id);
+                        if (!$request->is_column_included($connector->c_id_f))
+                            $request->push_column($connector->c_id_f);
+                    }
                 }
             }
             foreach ($first_dlms as $dlm_id) {
@@ -70,11 +72,13 @@ class WebDLMController {
                 // Load any needed matches for connected table,
                 foreach ($data[$dlm_id]['DATA'] as $row) {
                     foreach ($needed_connectors as $connector) {
-                        if (isset($row[$connector->c_id])) {
-                            foreach($connector->get_foreign_key($row[$connector->c_id]) as $val_f) {
-                                // Add each key as a match value so we get the needed rows when
-                                // the other DLM is run.
-                                $request->push_match($connector->c_id_f, $val_f);
+                        foreach ($connectors as $connector) {
+                            if (isset($row[$connector->c_id])) {
+                                foreach($connector->get_foreign_key($row[$connector->c_id]) as $val_f) {
+                                    // Add each key as a match value so we get the needed rows when
+                                    // the other DLM is run.
+                                    $request->push_match($connector->c_id_f, $val_f);
+                                }
                             }
                         }
                     }
