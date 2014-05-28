@@ -104,7 +104,7 @@ class WebDLMController {
                 }
             }
             // TODO: Not liking all the nested foreach loops.... yuck.  Got to think of something better and faster.
-            foreach ($first_dlms as $dlm_id) {
+            foreach ($second_dlms as $dlm_id) {
                 if (isset($data[$dlm_id])) continue; // Don't rerun any dlm that has already been run
                 $data[$dlm_id] = $this->run_one_dlm($dlm_id, $request);
                 // Load any needed matches for connected table,
