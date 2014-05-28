@@ -35,41 +35,56 @@ class WebDLMConnector {
     }
     
     // Creates an array of all connectors sorted in various ways for the DLM controller.
-    static public function get_connectors($dlm_id) {        
+    static public function get_connectors() {        
         $db = ResourceManager::get("DB_MASTER_PDO");
 
 
-        // TODO: Thinking about how to best proceed with the connectors.
-        // TODO: This function still needs work and needs to be converted over from when it was in the WebDLMBase class
         $connectors = array();
         $connectors['BY_ID'] = array();
         $connectors['BY_TABLE_TO_TABLE'] = array();
+        $connectors['BY_COLUMN_TO_COLUMN'] = array();
 
         $sql = "SELECT
                     con.ConnectorID,
                     t.DLMID,
-                    con.DLMTreeColumnIDPrimary
+                    con.DLMTreeColumnIDPrimary as c_id_p,
+                    con.DLMTreeColumnIDForeign as c_id_f,
+                    t.DLMTreeTableID as t_id_p,
+                    f.t_id_f as t_id_f    
                 FROM
-                    ".MASTER_DB_NAME_WITH_PREFIX."DLMConnector as con,
-                    ".MASTER_DB_NAME_WITH_PREFIX."DLMTreeColumn as t,
-                    ".MASTER_DB_NAME_WITH_PREFIX."DLMTreeTable as c,
+                    DLMConnector as con,
+                    DLMTreeColumn as c,
+                    DLMTreeTable as t,
+                    (
+                        SELECT
+                            con_f.ConnectorID as con_id_f,
+                            t_f.DLMTreeTableID as t_id_f
+                        FROM
+                            DLMConnector as con_f,
+                            DLMTreeColumn as c_f,
+                            DLMTreeTable as t_f
+                        WHERE
+                            t_f.DLMTreeTableID=c_f.DLMTreeTableID AND
+                            con_f.DLMTreeColumnIDForeign=c_f.DLMTreeColumnID
+                    ) as f
                 WHERE
                     t.DLMTreeTableID=c.DLMTreeTableID AND
-                    con.DLMTreeColumnIDPrimary=c.DLMTreeColumnID";
+                    con.DLMTreeColumnIDPrimary=c.DLMTreeColumnID AND
+                    con.ConnectorID=f.con_id_f";
         $sth = $db->prepare($sql);
         $sth->execute();
         
         foreach ($sth->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $connectors['BY_ID'][$row['ConnectorID']] = new WebDLMConnector($row['ConnectorID']);
+            $con_obj = new WebDLMConnector($row['ConnectorID']);
+            $connectors['BY_ID'][$row['ConnectorID']] = $con_obj;
             
-            if (!isset($this->connectors_by_key[$this->connectors[$row['ConnectorID']]->get_primary_key_name]))
-                $this->connectors_by_key[$this->connectors[$row['ConnectorID']]->get_primary_key_name] = array();
-            $this->connectors_by_key[$this->connectors[$row['ConnectorID']]->get_primary_key_name][$row['ConnectorID']] = $this->connectors[$row['ConnectorID']];
-
-            if (!isset($this->connectors_by_foreign_key[$this->connectors[$row['ConnectorID']]->get_foreign_key_name]))
-                $this->connectors_by_foreign_key[$this->connectors[$row['ConnectorID']]->get_foreign_key_name] = array();
-            $this->connectors_by_foreign_key[$this->connectors[$row['ConnectorID']]->get_foreign_key_name][$row['ConnectorID']] = $this->connectors[$row['ConnectorID']];
-
+            if (!isset($connectors['BY_TABLE_TO_TABLE'][$row['t_id_p']])) $connectors['BY_TABLE_TO_TABLE'][$row['t_id_p']] = array();
+            if (!isset($connectors['BY_TABLE_TO_TABLE'][$row['t_id_p']][$row['t_id_f']])) $connectors['BY_TABLE_TO_TABLE'][$row['t_id_p']][$row['t_id_f']] = array();
+            $connectors['BY_TABLE_TO_TABLE'][$row['t_id_p']][$row['t_id_f']][$row['ConnectorID']] = $con_obj
+            
+            if (!isset($connectors['BY_COLUMN_TO_COLUMN'][$row['c_id_p']])) $connectors['BY_COLUMN_TO_COLUMN'][$row['c_id_p']] = array();
+            if (!isset($connectors['BY_COLUMN_TO_COLUMN'][$row['c_id_p']][$row['c_id_f']])) $connectors['BY_COLUMN_TO_COLUMN'][$row['c_id_p']][$row['c_id_f']] = array();
+            $connectors['BY_COLUMN_TO_COLUMN'][$row['c_id_p']][$row['c_id_f']][$row['ConnectorID']] = $con_obj
         }
         
         return $connectors;

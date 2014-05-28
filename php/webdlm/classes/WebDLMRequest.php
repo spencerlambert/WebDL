@@ -70,6 +70,5 @@ class WebDLMRequest {
     public function get_matches() {
         return $this->match_on;
     }
-    
 }
 ?>

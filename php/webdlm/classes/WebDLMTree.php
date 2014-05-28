@@ -46,5 +46,32 @@ class WebDLMTree {
         return $required_dlms;
     }
     
+    public function get_required_tables($request) {
+        // Return combined arrays
+        return $this->get_column_tables($request) + $this->get_match_tables($request);
+    }
+    
+    public function get_column_tables($request) {
+        return $this->get_tables_from_columns($request->get_columns());        
+    }
+    
+    public function get_match_tables($request) {
+        return $this->get_tables_from_columns($request->get_matches());
+    }
+    
+    private function get_tables_from_columns($request_columns) {
+        $tables = array();
+        foreach ($request_columns as $col) {
+            if ($this->dlmid === null) {
+                $tables[$this->columns[$col->c_id]->t_id] = $this->columns[$col->c_id]->t_id;
+            } else {
+                if ($this->dlmid == $this->columns[$col->c_id]->dlm_id)
+                    $tables[$this->columns[$col->c_id]->t_id] = $this->columns[$col->c_id]->t_id;
+            }
+        }
+        
+        return $tables;        
+    }
+    
 }
 ?>
