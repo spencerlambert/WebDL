@@ -38,13 +38,13 @@ class WebDLMMySQL extends WebDLMBase {
         $username = $this->config['MYSQL_USER'];
         $password = $this->config['MYSQL_PASS'];
 
-        $ssl = array(
+        try {
+            if (strtoupper($this->config['MYSQL_SSL_TR']) == "TRUE") {
+                $ssl = array(
                     PDO::MYSQL_ATTR_SSL_KEY     => $this->config['MYSQL_SSL_KEY_PATH'],
                     PDO::MYSQL_ATTR_SSL_CERT    => $this->config['MYSQL_SSL_CERT_PATH'],
                     PDO::MYSQL_ATTR_SSL_CA      => $this->config['MYSQL_SSL_CA_PATH']
                 );
-        try {
-            if (strtoupper($this->config['MYSQL_SSL_TR']) == "TRUE") {
                 $this->pdo = new PDO($dsn, $username, $password, $ssl);
             } else {
                 $this->pdo = new PDO($dsn, $username, $password);                
