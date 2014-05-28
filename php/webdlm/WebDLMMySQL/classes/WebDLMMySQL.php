@@ -39,7 +39,7 @@ class WebDLMMySQL extends WebDLMBase {
         $password = $this->config['MYSQL_PASS'];
 
         try {
-            if (strtoupper($this->config['MYSQL_SSL_TR']) == "TRUE") {
+            if (strtoupper($this->config['MYSQL_SSL_TF']) == "TRUE") {
                 $ssl = array(
                     PDO::MYSQL_ATTR_SSL_KEY     => $this->config['MYSQL_SSL_KEY_PATH'],
                     PDO::MYSQL_ATTR_SSL_CERT    => $this->config['MYSQL_SSL_CERT_PATH'],
