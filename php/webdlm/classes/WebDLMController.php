@@ -92,7 +92,6 @@ class WebDLMController {
         $required_dlms = $this->tree->get_required_dlms($request);
         if ($required_dlms === false) return false;
 
-        $data = array();
         foreach ($required_dlms as $dlm_id) {
             if (isset($data[$dlm_id])) continue; // Don't rerun any dlm that has already been run
             $data[$dlm_id] = $this->run_one_dlm($dlm_id, $request);
