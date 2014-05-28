@@ -80,11 +80,11 @@ class WebDLMConnector {
             
             if (!isset($connectors['BY_TABLE_TO_TABLE'][$row['t_id_p']])) $connectors['BY_TABLE_TO_TABLE'][$row['t_id_p']] = array();
             if (!isset($connectors['BY_TABLE_TO_TABLE'][$row['t_id_p']][$row['t_id_f']])) $connectors['BY_TABLE_TO_TABLE'][$row['t_id_p']][$row['t_id_f']] = array();
-            $connectors['BY_TABLE_TO_TABLE'][$row['t_id_p']][$row['t_id_f']][$row['ConnectorID']] = $con_obj
+            $connectors['BY_TABLE_TO_TABLE'][$row['t_id_p']][$row['t_id_f']][$row['ConnectorID']] = $con_obj;
             
             if (!isset($connectors['BY_COLUMN_TO_COLUMN'][$row['c_id_p']])) $connectors['BY_COLUMN_TO_COLUMN'][$row['c_id_p']] = array();
             if (!isset($connectors['BY_COLUMN_TO_COLUMN'][$row['c_id_p']][$row['c_id_f']])) $connectors['BY_COLUMN_TO_COLUMN'][$row['c_id_p']][$row['c_id_f']] = array();
-            $connectors['BY_COLUMN_TO_COLUMN'][$row['c_id_p']][$row['c_id_f']][$row['ConnectorID']] = $con_obj
+            $connectors['BY_COLUMN_TO_COLUMN'][$row['c_id_p']][$row['c_id_f']][$row['ConnectorID']] = $con_obj;
         }
         
         return $connectors;
