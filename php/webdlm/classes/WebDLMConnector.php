@@ -159,7 +159,7 @@ class WebDLMConnector {
         $sth = $db->prepare($sql);
         $sth->execute($params);
         
-        foreach ($sth->fetchAll(PDO::FETCH_ASSOC as $row)) {
+        foreach ($sth->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $key_set[] = $row['ForeignKey'];
         }
         
@@ -180,7 +180,7 @@ class WebDLMConnector {
         $sth = $db->prepare($sql);
         $sth->execute($params);
         
-        foreach ($sth->fetchAll(PDO::FETCH_ASSOC as $row)) {
+        foreach ($sth->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $key_set[] = $row['PrimaryKey'];
         }
         
