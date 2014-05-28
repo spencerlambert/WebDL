@@ -20,19 +20,14 @@ class ResourceManager {
 			$dsn = 'mysql:dbname='.MASTER_DB_NAME.';host='.MASTER_DB_HOST;
 			$username = MASTER_DB_USER;
 			$password = MASTER_DB_PASS;
-                        /*
-                         TODO: Add SSL Support.
                         $ssl = array(
-                                    PDO::MYSQL_ATTR_SSL_KEY    =>'/etc/mysql/certs/client-key.pem',
-                                    PDO::MYSQL_ATTR_SSL_CERT=>'/etc/mysql/certs/client-cert.pem',
-                                    PDO::MYSQL_ATTR_SSL_CA    =>'/etc/mysql/certs/ca-cert.pem'
-                                );
-                        */
+                            PDO::MYSQL_ATTR_SSL_KEY     => MASTER_DB_SSL_KEY_PATH,
+                            PDO::MYSQL_ATTR_SSL_CERT    => MASTER_DB_SSL_CERT_PATH,
+                            PDO::MYSQL_ATTR_SSL_CA      => MASTER_DB_SSL_CA_PATH
+                        );
 			try {
                             if (MASTER_DB_SSL) {
-                                UserMessage::output("SSL SUPPORTED NOT YET ADDED FOR MYSQL, CHECK CONFIG.PHP", 'ResourceManager.php');
-                                exit();
-				//self::$DB_CATCHER = new PDO($dsn, $username, $password, $ssl);
+				self::$DB_MASTER_PDO = new PDO($dsn, $username, $password, $ssl);
                             } else {
 				self::$DB_MASTER_PDO = new PDO($dsn, $username, $password);
                             }

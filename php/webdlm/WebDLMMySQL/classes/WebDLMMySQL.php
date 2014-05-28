@@ -15,6 +15,10 @@ class WebDLMMySQL extends WebDLMBase {
         $this->config_list[] = "MYSQL_USER";
         $this->config_list[] = "MYSQL_PASS";
         $this->config_list[] = "MYSQL_DATABASE";
+        $this->config_list[] = "MYSQL_SSL_TF";
+        $this->config_list[] = "MYSQL_SSL_CERT_PATH";
+        $this->config_list[] = "MYSQL_SSL_KEY_PATH";
+        $this->config_list[] = "MYSQL_SSL_CA_PATH";
         
         parent::__construct($dlm_id);
         
@@ -33,16 +37,18 @@ class WebDLMMySQL extends WebDLMBase {
         $dsn = 'mysql:dbname='.$this->config['MYSQL_DATABASE'].';host='.$this->config['MYSQL_HOST'];
         $username = $this->config['MYSQL_USER'];
         $password = $this->config['MYSQL_PASS'];
-        /*
-         TODO: Add SSL Support.
+
         $ssl = array(
-                    PDO::MYSQL_ATTR_SSL_KEY    =>'/etc/mysql/certs/client-key.pem',
-                    PDO::MYSQL_ATTR_SSL_CERT=>'/etc/mysql/certs/client-cert.pem',
-                    PDO::MYSQL_ATTR_SSL_CA    =>'/etc/mysql/certs/ca-cert.pem'
+                    PDO::MYSQL_ATTR_SSL_KEY     => $this->config['MYSQL_SSL_KEY_PATH'],
+                    PDO::MYSQL_ATTR_SSL_CERT    => $this->config['MYSQL_SSL_CERT_PATH'],
+                    PDO::MYSQL_ATTR_SSL_CA      => $this->config['MYSQL_SSL_CA_PATH']
                 );
-        */
         try {
-            $this->pdo = new PDO($dsn, $username, $password);
+            if (strtoupper($this->config['MYSQL_SSL_TR']) == "TRUE") {
+                $this->pdo = new PDO($dsn, $username, $password, $ssl);
+            } else {
+                $this->pdo = new PDO($dsn, $username, $password);                
+            }
         } catch (PDOException $e) {
             AppMessage::output('MySQL Connection failed: ' . $e->getMessage());
             $this->pdo = false;
