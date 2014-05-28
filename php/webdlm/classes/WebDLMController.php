@@ -122,12 +122,7 @@ class WebDLMController {
                     }
                 }
             }
-            
-            
-            
-            
-            
-        }
+        } // END IF "GET"
         
         
         // Run request on all remaining required DLMs
@@ -139,8 +134,7 @@ class WebDLMController {
             $data[$dlm_id] = $this->run_one_dlm($dlm_id, $request);
         }
         
-        // dumping for testing...
-        var_dump($data);
+        $return ($data);
         
     }
     
