@@ -147,8 +147,8 @@ class WebDLMController {
                 foreach ($row as $c_id=>$c_val) {
                     $name = $c_id."-".$c_val;
                     if (isset($row_links[$name])) {
-                        foreach ($row_links[$name] as $id=>$row) {
-                            $row_links[$name][$id] = array_merge($row, $row_links[$name][$id]);                            
+                        foreach ($row_links[$name] as $id=>$link_to_row) {
+                            $row_links[$name][$id] = array_merge($row, $link_to_row);                            
                         }
                     }
                 }
