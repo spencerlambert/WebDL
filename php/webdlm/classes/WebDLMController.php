@@ -84,7 +84,7 @@ class WebDLMController {
                                     $request->push_match($connector->c_id_f, $val_f, 'OR');
                                     if (!isset($row_links[$connector->c_id_f."-".$val_f]))
                                         $row_links[$connector->c_id_f."-".$val_f] = array();
-                                    $row_links[$connector->c_id_f."-".$val_f] = $row;
+                                    $row_links[$connector->c_id_f."-".$val_f][] = $row;
                                 }
                             }
                         }
@@ -122,7 +122,7 @@ class WebDLMController {
                                     $request->push_match($connector->c_id, $val_p, 'OR');
                                     if (!isset($row_links[$connector->c_id."-".$val_p]))
                                         $row_links[$connector->c_id."-".$val_p] = array();
-                                    $row_links[$connector->c_id."-".$val_p] = $row;
+                                    $row_links[$connector->c_id."-".$val_p][] = $row;
                                 }
                             }
                         }
@@ -146,14 +146,19 @@ class WebDLMController {
             foreach ($data[$dlm_id]['DATA'] as $row) {
                 foreach ($row as $c_id=>$c_val) {
                     $name = $c_id."-".$val;
-                    if (isset($row_links[$name]))
-                        $row_links[$name] = array_merge($row, $row_links[$name]);
+                    if (isset($row_links[$name])) {
+                        foreach ($row_links[$name] as $id=>$row) {
+                            $row_links[$name][$id] = array_merge($row, $row_links[$name][$id]);                            
+                        }
+                    }
                 }
             }
         }
         $working_join = array();
-        foreach ($row_links as $row) {
-            $working_join[] = $row;
+        foreach ($row_links as $ary) {
+            foreach ($ary as $row) {
+                $working_join[] = $row;
+            }
         }        
         $data['JOIN']['DATA'] = $working_join;
         
