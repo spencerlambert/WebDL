@@ -142,14 +142,12 @@ class WebDLMController {
         }
         
         // Join the data if needed.
-        foreach ($row_links as $name=>$val) {
-            foreach ($required_dlms as $dlm_id) {
-                foreach ($data[$dlm_id]['DATA'] as $row) {
-                    foreach ($row as $c_id=>$c_val) {
-                        if ($name == $c_id."-".$val) {
-                            $row_links[$name] = array_merge($row, $row_links[$name]);
-                        }
-                    }
+        foreach ($required_dlms as $dlm_id) {
+            foreach ($data[$dlm_id]['DATA'] as $row) {
+                foreach ($row as $c_id=>$c_val) {
+                    $name = $c_id."-".$val;
+                    if (isset($row_links[$name]))
+                        $row_links[$name] = array_merge($row, $row_links[$name]);
                 }
             }
         }
