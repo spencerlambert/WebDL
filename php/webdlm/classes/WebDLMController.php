@@ -145,7 +145,7 @@ class WebDLMController {
         foreach ($required_dlms as $dlm_id) {
             foreach ($data[$dlm_id]['DATA'] as $row) {
                 foreach ($row as $c_id=>$c_val) {
-                    $name = $c_id."-".$val;
+                    $name = $c_id."-".$c_val;
                     if (isset($row_links[$name])) {
                         foreach ($row_links[$name] as $id=>$row) {
                             $row_links[$name][$id] = array_merge($row, $row_links[$name][$id]);                            
