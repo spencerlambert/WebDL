@@ -142,6 +142,7 @@ class WebDLMController {
         }
         
         // Join the data if needed.
+        // TODO: This will only join two DLMs, need to add logic for joining more together.
         foreach ($required_dlms as $dlm_id) {
             foreach ($data[$dlm_id]['DATA'] as $row) {
                 foreach ($row as $c_id=>$c_val) {
