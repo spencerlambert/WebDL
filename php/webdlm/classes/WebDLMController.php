@@ -35,6 +35,7 @@ class WebDLMController {
         
         // An array to keep all the data from the DLM requests.
         $data = array();
+        $row_links = array();
 
         // There are special considerations that have not yet been figured out
         // for other types of requests.  See comments below.
@@ -81,6 +82,9 @@ class WebDLMController {
                                     // Add each key as a match value so we get the needed rows when
                                     // the other DLM is run.
                                     $request->push_match($connector->c_id_f, $val_f, 'OR');
+                                    if (!isset($row_links[$connector->c_id_f."-".$val_f]))
+                                        $row_links[$connector->c_id_f."-".$val_f] = array();
+                                    $row_links[$connector->c_id_f."-".$val_f] = $row;
                                 }
                             }
                         }
@@ -116,6 +120,9 @@ class WebDLMController {
                                     // Add each key as a match value so we get the needed rows when
                                     // the other DLM is run.
                                     $request->push_match($connector->c_id, $val_p, 'OR');
+                                    if (!isset($row_links[$connector->c_id."-".$val_p]))
+                                        $row_links[$connector->c_id."-".$val_p] = array();
+                                    $row_links[$connector->c_id."-".$val_p] = $row;
                                 }
                             }
                         }
@@ -134,6 +141,25 @@ class WebDLMController {
             $data[$dlm_id] = $this->run_one_dlm($dlm_id, $request);
         }
         
+        // Join the data if needed.
+        foreach ($row_links as $name=>$val) {
+            foreach ($required_dlms as $dlm_id) {
+                foreach ($data[$dlm_id]['DATA'] as $row) {
+                    foreach ($row as $c_id=>$c_val) {
+                        if ($name == $c_id."-".$val) {
+                            $row_links[$name] = array_merge($row, $row_links[$name]);
+                        }
+                    }
+                }
+            }
+        }
+        $working_join = array();
+        foreach ($row_links as $row) {
+            $working_join[] = $row;
+        }        
+        $data['JOIN']['DATA'] = $working_join;
+        
+        // Return the data
         return $data;
     }
     

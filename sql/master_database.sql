@@ -22,7 +22,7 @@ CREATE TABLE DLMTreeTable (
 );
 
 CREATE TABLE DLMTreeColumn (
-    DLMTreeColumnID     int UNSIGNED NOT NULL AUTO_INCREMENT,
+    DLMTreeColumnID     varchar(80) UNIQUE NOT NULL,
     DLMTreeTableID      int UNSIGNED,
     Name                varchar(80),
     Type                enum('Numeric','String','Text'),
@@ -34,8 +34,8 @@ CREATE TABLE DLMTreeColumn (
 # not part of the design, that is what connectors are for. The database will
 # allow it, but it will not work in the code, and my cause errors.
 CREATE TABLE DLMTreeLink (
-    DLMTreeColumnID         int UNSIGNED,
-    DLMTreeColumnIDForeign  int UNSIGNED,
+    DLMTreeColumnID         varchar(80),
+    DLMTreeColumnIDForeign  varchar(80),
     Type	            enum('OneToOne','OneToMany','ManyToMany'),
     PRIMARY KEY (DLMTreeColumnID, DLMTreeColumnIDForeign),
     INDEX (DLMTreeTableID),
@@ -46,8 +46,8 @@ CREATE TABLE DLMTreeLink (
 CREATE TABLE DLMConnector (
     ConnectorID             int UNSIGNED NOT NULL AUTO_INCREMENT,
     ConnectorName           varchar(80),
-    DLMTreeColumnIDPrimary  int UNSIGNED,
-    DLMTreeColumnIDForeign  int UNSIGNED,
+    DLMTreeColumnIDPrimary  varchar(80),
+    DLMTreeColumnIDForeign  varchar(80),
     Type	            enum('OneToOne','OneToMany','ManyToMany'),
     KeyType                 enum('BothInt','BothVarchar','IntToVarchar','VarcharToInt'),
     PRIMARY KEY (ConnectorID),
