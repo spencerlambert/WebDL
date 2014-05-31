@@ -144,39 +144,17 @@ class WebDLMController {
                     foreach ($row as $c_id=>$c_val) {
                         $name = $c_id."-".$c_val;
                         if (isset($row_links[$name])) {
+                            if (!isset($join[$dlm_id]))
+                                $join[$dlm_id] = array();
                             foreach ($row_links[$name] as $id=>$link) {
-                                $join[] = array_merge($link, $row);                            
+                                $join[$dlm_id][] = array_merge($link, $row);                            
                             }
                         }
                     }
                 }
             }
         }// end if count()
-        $merge = array();
-        foreach ($join as $row) {
-            foreach ($join as $comp) {
-                $different = false;
-                $data_matches = false;
-                foreach ($comp as $col=>$val) {
-                    if (!in_array($col, $row))
-                        $different = true;
-                    if ($row[$col] === $comp[$col])
-                        $data_matches = true;
-                }
-                if ($different && $data_matches)
-                    $merge[] = array_merge($row, $comp);
-            }
-        }
-        
-        /*
-        $working_join = array();
-        foreach ($row_links as $ary) {
-            foreach ($ary as $row) {
-                $working_join[] = $row;
-            }
-        }
-        */
-        $data['JOIN']['DATA'] = $merge;
+        $data['JOIN']['DATA'] = $join;
         
         // Return the data
         return $data;
