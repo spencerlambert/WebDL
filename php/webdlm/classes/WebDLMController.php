@@ -82,7 +82,7 @@ class WebDLMController {
                         if (in_array($this->tree->columns[$connector->c_id]->dlm_id, $connector_run)  && !in_array($this->tree->columns[$connector->c_id_f]->dlm_id, $connector_run))
                             $connector_run[] = $this->tree->columns[$connector->c_id_f]->dlm_id;
                         if (in_array($this->tree->columns[$connector->c_id_f]->dlm_id, $connector_run)  && !in_array($this->tree->columns[$connector->c_id]->dlm_id, $connector_run))
-                            $connector_run[] = $this->tree->columns[$connector->c_id_f]->dlm_id;
+                            $connector_run[] = $this->tree->columns[$connector->c_id]->dlm_id;
                     }
                 }
                 $have_all = true;
