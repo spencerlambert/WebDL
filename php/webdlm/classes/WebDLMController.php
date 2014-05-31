@@ -154,6 +154,25 @@ class WebDLMController {
                 }
             }
         }// end if count()
+        $merge = array();
+        foreach ($join as $dlm_id=>$m_ary) {
+            foreach $join as $dlm_id_f=>$m_ary_f) {
+                if ($dlm_id == $dlm_id_f) continue;
+                foreach ($m_ary as $row) {
+                    foreach($m_ary_f as $row_f) {
+                        //if all the rows in both match, then merge.
+                        $all_match = true;
+                        foreach ($row as $col=>$val) {
+                            if (in_array($col, $row_f) && $row[$col] !== $val)
+                                $all_match = false;
+                        }
+                        if ($all_match) $merge[] = array_merge($row, $row_f);
+                    }
+                }
+            }
+        }
+
+
         $data['JOIN']['DATA'] = $join;
         
         // Return the data
