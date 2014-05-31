@@ -37,6 +37,9 @@ class WebDLMController {
         $data = array();
         $row_links = array();
 
+        // All DLMs needed for this request
+        $required_dlms = $this->tree->get_required_dlms($request);
+
         // There are special considerations that have not yet been figured out
         // for other types of requests.  See comments below.
         if ($request->get_type() == "GET") {
@@ -52,8 +55,12 @@ class WebDLMController {
             }
             
             //Add any primary or foreign columns used by the connectors.
+            //Make a lis of the DLMs that have connectors.
+            $connector_dlms = array();
             foreach ($needed_connectors as $connectors) {
                 foreach ($connectors as $connector) {
+                    $connector_dlms[$this->tree->columns[$connector->c_id]->dlm_id] = $this->tree->columns[$connector->c_id]->dlm_id;
+                    $connector_dlms[$this->tree->columns[$connector->c_id_f]->dlm_id] = $this->tree->columns[$connector->c_id_f]->dlm_id;
                     if (!$request->is_column_included($connector->c_id))
                         $request->push_column($connector->c_id);
                     if (!$request->is_column_included($connector->c_id_f))
@@ -61,16 +68,33 @@ class WebDLMController {
                 }
             }
             
-            //Run any dlms in which we are matching on.
-            $matched_dlms = $this->tree->get_match_dlms($request);
-            foreach ($matched_dlms as $dlm_id) {
-                if (isset($data[$dlm_id])) continue; // Don't rerun any dlm that has already been run
-                $data[$dlm_id] = $this->run_one_dlm($dlm_id, $request);
-            }
             
+            //Run any dlms in which we are matching on fisrt.
+            $connector_run = array();
+            foreach ($this->tree->get_match_dlms($request) as $dlm_id) {
+                $connector_run[] = $dlm_id;
+            }
+            //Put the DLMs in run order so we can filter out other data as we go.
+            $have_all = false
+            while (!$have_all) {
+                foreach ($needed_connectors as $connectors) {
+                    foreach ($connectors as $connector) {
+                        if (in_array($this->tree->columns[$connector->c_id]->dlm_id, $connector_run)  && !in_array($this->tree->columns[$connector->c_id_f]->dlm_id, $connector_run))
+                            $connector_run[] = $this->tree->columns[$connector->c_id_f]->dlm_id;
+                    }
+                }
+                $have_all = true;
+                foreach ($connector_run as $dlm_id) {
+                    if (!in_array($dlm_id, $connector_dlms)) $have_all = false;
+                }
+            }
+
+                        
             //Add any matches that need to link to other DLMs from our first results.
             // TODO: Not liking all the nested foreach loops.... yuck.  Got to think of something better and faster.
-            foreach ($matched_dlms as $dlm_id) {
+            foreach ($connector_run as $dlm_id) {
+                if (isset($data[$dlm_id])) continue; // Don't rerun any dlm that has already been run
+                $data[$dlm_id] = $this->run_one_dlm($dlm_id, $request);
                 foreach ($data[$dlm_id]['DATA'] as $row) {
                     foreach ($needed_connectors as $connectors) {
                         foreach ($connectors as $connector) {
@@ -104,9 +128,7 @@ class WebDLMController {
         } // END IF "GET"
         
         
-        // Run request on all remaining required DLMs
-        $required_dlms = $this->tree->get_required_dlms($request);
-
+        // Run any remaining DLMs
         foreach ($required_dlms as $dlm_id) {
             if (isset($data[$dlm_id])) continue; // Don't rerun any dlm that has already been run
             $data[$dlm_id] = $this->run_one_dlm($dlm_id, $request);
