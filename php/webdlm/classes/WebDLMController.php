@@ -103,8 +103,7 @@ class WebDLMController {
                             // Add the Primary Key links
                             if (isset($row[$connector->c_id])) {
                                 foreach($connector->get_foreign_key($row[$connector->c_id]) as $val_f) {
-                                    // Add each key as a match value so we get the needed rows when
-                                    // the other DLM is run.
+                                    // Add each key as a match value so we get the needed rows when the other DLM is run.
                                     $request->push_match($connector->c_id_f, $val_f, 'OR');
                                     if (!isset($row_links[$connector->con_id."-".$connector->c_id_f."-".$val_f]))
                                         $row_links[$connector->con_id."-".$connector->c_id_f."-".$val_f] = array();
@@ -114,8 +113,7 @@ class WebDLMController {
                             // Add the Foreign Key Links
                             if (isset($row[$connector->c_id_f])) {
                                 foreach($connector->get_primary_key($row[$connector->c_id_f]) as $val_p) {
-                                    // Add each key as a match value so we get the needed rows when
-                                    // the other DLM is run.
+                                    // Add each key as a match value so we get the needed rows when the other DLM is run.
                                     $request->push_match($connector->c_id, $val_p, 'OR');
                                     if (!isset($row_links[$connector->con_id."-".$connector->c_id."-".$val_p]))
                                         $row_links[$connector->con_id."-".$connector->c_id."-".$val_p] = array();
