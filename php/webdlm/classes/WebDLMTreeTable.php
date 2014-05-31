@@ -19,7 +19,7 @@ class WebDLMTreeTable {
             $sql = "SELECT        
                         t.DLMTreeTableID,
                         t.DLMID,
-                        t.Name as TName,
+                        t.Name as TName
                     FROM
                         ".MASTER_DB_NAME_WITH_PREFIX."DLMTreeTable t";
             $sth = $db->prepare($sql);
@@ -29,7 +29,7 @@ class WebDLMTreeTable {
             $sql = "SELECT        
                         t.DLMTreeTableID,
                         t.DLMID,
-                        t.Name as TName,
+                        t.Name as TName
                     FROM
                         ".MASTER_DB_NAME_WITH_PREFIX."DLMTreeTable t
                     WHERE
