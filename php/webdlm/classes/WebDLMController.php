@@ -82,9 +82,9 @@ class WebDLMController {
                                     // Add each key as a match value so we get the needed rows when
                                     // the other DLM is run.
                                     $request->push_match($connector->c_id_f, $val_f, 'OR');
-                                    if (!isset($row_links[$connector->c_id_f."-".$val_f]))
-                                        $row_links[$connector->c_id_f."-".$val_f] = array();
-                                    $row_links[$connector->c_id_f."-".$val_f][] = $row;
+                                    if (!isset($row_links[$connector->con_id."-".$connector->c_id_f."-".$val_f]))
+                                        $row_links[$connector->con_id."-".$connector->c_id_f."-".$val_f] = array();
+                                    $row_links[$connector->con_id."-".$connector->c_id_f."-".$val_f][] = $row;
                                 }
                             }
                         }
@@ -120,9 +120,9 @@ class WebDLMController {
                                     // Add each key as a match value so we get the needed rows when
                                     // the other DLM is run.
                                     $request->push_match($connector->c_id, $val_p, 'OR');
-                                    if (!isset($row_links[$connector->c_id."-".$val_p]))
-                                        $row_links[$connector->c_id."-".$val_p] = array();
-                                    $row_links[$connector->c_id."-".$val_p][] = $row;
+                                    if (!isset($row_links[$connector->con_id."-".$connector->c_id."-".$val_p]))
+                                        $row_links[$connector->con_id."-".$connector->c_id."-".$val_p] = array();
+                                    $row_links[$connector->con_id."-".$connector->c_id."-".$val_p][] = $row;
                                 }
                             }
                         }
@@ -143,18 +143,24 @@ class WebDLMController {
         
         // Join the data if needed.
         // TODO: This will only join two DLMs, need to add logic for joining more together.
-        foreach ($required_dlms as $dlm_id) {
-            foreach ($data[$dlm_id]['DATA'] as $row) {
-                foreach ($row as $c_id=>$c_val) {
-                    $name = $c_id."-".$c_val;
-                    if (isset($row_links[$name])) {
-                        foreach ($row_links[$name] as $id=>$link_to_row) {
-                            $row_links[$name][$id] = array_merge($row, $link_to_row);                            
+        if (count($row_links) != 0) { 
+            foreach ($required_dlms as $dlm_id) {
+                foreach ($data[$dlm_id]['DATA'] as $row) {
+                    foreach ($row as $c_id=>$c_val) {
+                        foreach ($needed_connectors as $connector) {
+                            foreach ($connectors as $connector) {
+                                $name = $connector->con_id."-".$c_id."-".$c_val;
+                                if (isset($row_links[$name])) {
+                                    foreach ($row_links[$name] as $id=>$link_to_row) {
+                                        $row_links[$name][$id] = array_merge($row, $link_to_row);                            
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
-        }
+        }// end if count()
         $working_join = array();
         foreach ($row_links as $ary) {
             foreach ($ary as $row) {

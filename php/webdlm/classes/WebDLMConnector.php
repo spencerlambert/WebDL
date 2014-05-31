@@ -1,6 +1,6 @@
 <?php
 class WebDLMConnector {
-    protected $connector_id;
+    public $con_id;
     public $name;
     public $c_id;
     public $c_id_f;
@@ -10,13 +10,13 @@ class WebDLMConnector {
     
     protected $sql_key_table;
         
-    public function __construct($connector_id) {
+    public function __construct($con_id) {
         $db = ResourceManager::get("DB_MASTER_PDO");
 
-        $this->connector_id = $connector_id;
+        $this->con_id = $con_id;
 
         $sql = "SELECT * FROM ".MASTER_DB_NAME_WITH_PREFIX."DLMConnector WHERE ConnectorID=:id";
-        $params = array(':id'=>$this->connector_id);
+        $params = array(':id'=>$this->con_id);
         $sth = $db->prepare($sql);
         $sth->execute($params);
 
@@ -30,7 +30,7 @@ class WebDLMConnector {
             $this->sql_key_table = MASTER_DB_NAME_WITH_PREFIX."DLMConnector".$this->type.$this->key_type;
         } else {
             //No connector in DB
-            UserMessage::output('No DLMConnector with the ID of '.$this->connector_id, 'WebDLMConnectorBase.php');
+            UserMessage::output('No DLMConnector with the ID of '.$this->con_id, 'WebDLMConnectorBase.php');
         }
     }
     
@@ -139,7 +139,7 @@ class WebDLMConnector {
                 break;
         }
         
-        $params = array(':id'=>$this->connector_id, ':p_key'=>$key, ':f_key'=>$foreign_key);
+        $params = array(':id'=>$this->con_id, ':p_key'=>$key, ':f_key'=>$foreign_key);
         $sth = $db->prepare($sql);
         $sth->execute($params);
         
@@ -155,7 +155,7 @@ class WebDLMConnector {
                 WHERE
                     ConnectorID=:id AND
                     PrimaryKey=:p_key";
-        $params = array(':id'=>$this->connector_id, ':p_key'=>$primary_key);
+        $params = array(':id'=>$this->con_id, ':p_key'=>$primary_key);
         $sth = $db->prepare($sql);
         $sth->execute($params);
         
@@ -176,7 +176,7 @@ class WebDLMConnector {
                 WHERE
                     ConnectorID=:id AND
                     ForeignKey=:f_key";
-        $params = array(':id'=>$this->connector_id, ':f_key'=>$foreign_key);
+        $params = array(':id'=>$this->con_id, ':f_key'=>$foreign_key);
         $sth = $db->prepare($sql);
         $sth->execute($params);
         
@@ -194,7 +194,7 @@ class WebDLMConnector {
                 WHERE
                     ConnectorID=:id AND
                     PrimaryKey=:p_key";
-        $params = array(':id'=>$this->connector_id, ':p_key'=>$primary_key);
+        $params = array(':id'=>$this->con_id, ':p_key'=>$primary_key);
         $sth = $db->prepare($sql);
         $sth->execute($params);                    
     }
@@ -206,7 +206,7 @@ class WebDLMConnector {
                 WHERE
                     ConnectorID=:id AND
                     ForeignKey=:f_key";
-        $params = array(':id'=>$this->connector_id, ':f_key'=>$foreign_key);
+        $params = array(':id'=>$this->con_id, ':f_key'=>$foreign_key);
         $sth = $db->prepare($sql);
         $sth->execute($params);                    
     }
@@ -219,7 +219,7 @@ class WebDLMConnector {
                     ConnectorID=:id AND
                     PrimaryKey=:p_key AND
                     ForeignKey=:f_key";
-        $params = array(':id'=>$this->connector_id, ':p_key'=>$key, ':f_key'=>$foreign_key);
+        $params = array(':id'=>$this->con_id, ':p_key'=>$key, ':f_key'=>$foreign_key);
         $sth = $db->prepare($sql);
         $sth->execute($params);
     }
