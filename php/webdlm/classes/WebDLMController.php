@@ -93,10 +93,10 @@ class WebDLMController {
 
                         
             //Add any matches that need to link to other DLMs from our first results.
-            // TODO: Not liking all the nested foreach loops.... yuck.  Got to think of something better and faster.
             foreach ($connector_run as $dlm_id) {
                 if (isset($data[$dlm_id])) continue; // Don't rerun any dlm that has already been run
                 $data[$dlm_id] = $this->run_one_dlm($dlm_id, $request);
+                // Now look for keys that match connectors and add the matches to the request.
                 foreach ($data[$dlm_id]['DATA'] as $row) {
                     foreach ($needed_connectors as $connectors) {
                         foreach ($connectors as $connector) {
@@ -137,6 +137,7 @@ class WebDLMController {
         }
         
         // Join the data if needed.
+        // TODO: This is really not working...  Need to get it right.
         // TODO: This will only join two DLMs, need to add logic for joining more together.
         if (count($row_links) != 0) { 
             foreach ($required_dlms as $dlm_id) {
