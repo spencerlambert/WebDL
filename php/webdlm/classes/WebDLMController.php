@@ -173,7 +173,7 @@ class WebDLMController {
         }
 
 
-        $data['JOIN']['DATA'] = $join;
+        $data['JOIN']['DATA'] = $merge;
         
         // Return the data
         return $data;
