@@ -155,12 +155,16 @@ class WebDLMController {
         $merge = array();
         foreach ($join as $row) {
             foreach ($join as $comp) {
+                $different = false;
+                $data_matches = false;
                 foreach ($comp as $col=>$val) {
-                    if (!in_array($col, $row)) {
-                        $merge[] = array_merge($row, $comp);
-                        break;
-                    }
+                    if (!in_array($col, $row))
+                        $different = true;
+                    if ($row[$col] === $comp[$col])
+                        $data_matches = true;
                 }
+                if ($different && $data_matches)
+                    $merge[] = array_merge($row, $comp);
             }
         }
         
