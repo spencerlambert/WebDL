@@ -91,6 +91,27 @@ class WebDLMController {
                     }
                 }
             }
+            foreach ($first_dlms as $dlm_id) {
+                if (isset($data[$dlm_id])) continue; // Don't rerun any dlm that has already been run
+                $data[$dlm_id] = $this->run_one_dlm($dlm_id, $request);
+                // Load any needed matches for connected table,
+                foreach ($data[$dlm_id]['DATA'] as $row) {
+                    foreach ($needed_connectors as $connector) {
+                        foreach ($connectors as $connector) {
+                            if (isset($row[$connector->c_id_f])) {
+                                foreach($connector->get_primary_key($row[$connector->c_id_f]) as $val_p) {
+                                    // Add each key as a match value so we get the needed rows when
+                                    // the other DLM is run.
+                                    $request->push_match($connector->c_id, $val_p, 'OR');
+                                    if (!isset($row_links[$connector->con_id."-".$connector->c_id."-".$val_p]))
+                                        $row_links[$connector->con_id."-".$connector->c_id."-".$val_p] = array();
+                                    $row_links[$connector->con_id."-".$connector->c_id."-".$val_p][] = $row;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             
             //Run any DLMs that have a foreign key connector table in the match first.
             $second_dlms = array();
@@ -129,6 +150,30 @@ class WebDLMController {
                     }
                 }
             }
+
+            // TODO: Not liking all the nested foreach loops.... yuck.  Got to think of something better and faster.
+            foreach ($second_dlms as $dlm_id) {
+                if (isset($data[$dlm_id])) continue; // Don't rerun any dlm that has already been run
+                $data[$dlm_id] = $this->run_one_dlm($dlm_id, $request);
+                // Load any needed matches for connected table,
+                foreach ($data[$dlm_id]['DATA'] as $row) {
+                    foreach ($needed_connectors as $connector) {
+                        foreach ($connectors as $connector) {
+                            if (isset($row[$connector->c_id])) {
+                                foreach($connector->get_foreign_key($row[$connector->c_id]) as $val_f) {
+                                    // Add each key as a match value so we get the needed rows when
+                                    // the other DLM is run.
+                                    $request->push_match($connector->c_id_f, $val_f, 'OR');
+                                    if (!isset($row_links[$connector->con_id."-".$connector->c_id_f."-".$val_f]))
+                                        $row_links[$connector->con_id."-".$connector->c_id_f."-".$val_f] = array();
+                                    $row_links[$connector->con_id."-".$connector->c_id_f."-".$val_f][] = $row;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
         } // END IF "GET"
         
         
