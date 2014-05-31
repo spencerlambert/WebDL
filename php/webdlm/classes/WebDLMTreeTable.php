@@ -62,7 +62,7 @@ class WebDLMTreeTable {
         $sth = $db->prepare($sql);
         $sth->execute();
         foreach ($sth->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $tables[$row['DLMTreeTableID']][$row['DLMTreeColumnID']] = $row['DLMTreeColumnID'];            
+            $tables[$row['DLMTreeTableID']]->c_ids[$row['DLMTreeColumnID']] = $row['DLMTreeColumnID'];            
         }
 
         return $tables;
