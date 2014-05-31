@@ -75,7 +75,7 @@ class WebDLMController {
                 $connector_run[] = $dlm_id;
             }
             //Put the DLMs in run order so we can filter out other data as we go.
-            $have_all = false
+            $have_all = false;
             while (!$have_all) {
                 foreach ($needed_connectors as $connectors) {
                     foreach ($connectors as $connector) {
