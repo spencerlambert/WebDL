@@ -22,7 +22,7 @@ class WebDLMTree {
     }
     
     
-    public function get_matched_dlms($request) {
+    public function get_match_dlms($request) {
         $dlms = array();
         foreach ($this->get_match_tables($request) as $t_id) {
             $dlms[$this->tables[$t_id]->dlm_id] = $this->tables[$t_id]->dlm_id;

@@ -62,7 +62,7 @@ class WebDLMController {
             }
             
             //Run any dlms in which we are matching on.
-            $matched_dlms = $this->tree->get_matched_dlms($request);
+            $matched_dlms = $this->tree->get_match_dlms($request);
             foreach ($matched_dlms as $dlm_id) {
                 if (isset($data[$dlm_id])) continue; // Don't rerun any dlm that has already been run
                 $data[$dlm_id] = $this->run_one_dlm($dlm_id, $request);
