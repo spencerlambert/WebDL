@@ -156,7 +156,7 @@ class WebDLMController {
         }// end if count()
         $merge = array();
         foreach ($join as $dlm_id=>$m_ary) {
-            foreach $join as $dlm_id_f=>$m_ary_f) {
+            foreach ($join as $dlm_id_f=>$m_ary_f) {
                 if ($dlm_id == $dlm_id_f) continue;
                 foreach ($m_ary as $row) {
                     foreach($m_ary_f as $row_f) {
