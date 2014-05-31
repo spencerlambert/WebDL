@@ -72,7 +72,7 @@ class WebDLMController {
             // TODO: Not liking all the nested foreach loops.... yuck.  Got to think of something better and faster.
             foreach ($matched_dlms as $dlm_id) {
                 foreach ($data[$dlm_id]['DATA'] as $row) {
-                    foreach ($needed_connectors as $connector) {
+                    foreach ($needed_connectors as $connectors) {
                         foreach ($connectors as $connector) {
                             // Add the Primary Key links
                             if (isset($row[$connector->c_id])) {
