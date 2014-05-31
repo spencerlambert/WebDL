@@ -152,6 +152,18 @@ class WebDLMController {
                 }
             }
         }// end if count()
+        $merge = array();
+        foreach ($join as $row) {
+            foreach ($join as $comp) {
+                foreach ($comp as $col=>$val) {
+                    if (!in_array($col, $row)) {
+                        $merge[] = array_merge($row, $comp);
+                        break;
+                    }
+                }
+            }
+        }
+        
         /*
         $working_join = array();
         foreach ($row_links as $ary) {
@@ -160,7 +172,7 @@ class WebDLMController {
             }
         }
         */
-        $data['JOIN']['DATA'] = $join;
+        $data['JOIN']['DATA'] = $merge;
         
         // Return the data
         return $data;
