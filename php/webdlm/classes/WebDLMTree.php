@@ -18,32 +18,24 @@ class WebDLMTree {
     
     
     public function get_required_dlms($request) {
+        return $this->get_column_dlms($request) + $this->get_match_dlms($request);        
+    }
+    
+    
+    public function get_matched_dlms($request) {
+        $dlms = array();
+        foreach ($this->get_match_tables($request) as $t_id) {
+            $dlms[$this->tables[$t_id]->dlm_id] = $this->tables[$t_id]->dlm_id;
+        }
+        return $dlms;
+    }
 
-        // This function should only be called when the tree contains all trees.
-        if ($this->dlmid !== null) {
-            UserMessage::output("WebDLMTree::get_required_dlms() is being called by a tree that does not contain all DLM trees.  Can't do that...", "WebDLMTree.php");
-            return false;
+    public function get_column_dlms($request) {
+        $dlms = array();
+        foreach ($this->get_column_tables($request) as $t_id) {
+            $dlms[$this->tables[$t_id]->dlm_id] = $this->tables[$t_id]->dlm_id;
         }
-        
-        $r_columns = $request->get_columns();
-        $r_matches = $request->get_matches();
-
-        // Get a list of all the DLMs we need to make requests to.
-        $required_dlms = array();
-        foreach ($r_columns as $col) {
-            $required_dlms[$this->columns[$col->c_id]->dlm_id] = $this->columns[$col->c_id]->dlm_id;
-        }
-        
-        if (count($required_dlms) == 0) {
-            UserMessage::output('No COLUMN_ID in the WebDLMRequest object, at least one column id needs to be pushed.', 'WebDLMTree.php');
-            return false;            
-        }
-        
-        foreach ($r_matches as $col) {
-            $required_dlms[$this->columns[$col->c_id]->dlm_id] = $this->columns[$col->c_id]->dlm_id;
-        }
-        
-        return $required_dlms;
+        return $dlms;
     }
     
     public function get_required_tables($request) {
