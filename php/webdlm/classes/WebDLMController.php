@@ -167,25 +167,31 @@ class WebDLMController {
                             if (in_array($col, $row_f) && $row[$col] !== $val)
                                 $all_match = false;
                         }
-                        $conn_count = 0;
-                        if ($all_match) {
-                            foreach ($needed_connectors as $connectors) {
-                                foreach ($connectors as $connector) {
-                                    if (isset($row[$connector->c_id])) $conn_count++;
-                                    if (isset($row[$connector->c_id_f])) $conn_count++;
-                                    if (isset($row_f[$connector->c_id])) $conn_count++;
-                                    if (isset($row_f[$connector->c_id_f])) $conn_count++;
-                                }
-                            }
+                        if ($all_match)
                             $merge[] = array_merge($row, $row_f, array('conn_count'=>$conn_count);
-                        }
                     }
                 }
             }
         }
+        if (count($merge) > 0) {
+            $filter = array();
+            $filter[] = $merge[0];
+            foreach ($merge as $row_m) {
+                $is_unique = false;
+                foreach($filter as $id=>$row_f) {
+                    $tmp = array_diff_assoc($row_m, $row_f);
+                    if (count($tmp) != 0) {
+                        $is_unique = true;
+                        break;
+                    }
+                }
+                if ($is_unique)
+                    $filter[] = $row_m;
+            }
+        }
 
 
-        $data['JOIN']['DATA'] = $merge;
+        $data['JOIN']['DATA'] = $filter;
         
         // Return the data
         return $data;
