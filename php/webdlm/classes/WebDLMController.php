@@ -155,6 +155,7 @@ class WebDLMController {
             }
         }// end if count()
         
+        
         $merge = array();
         foreach ($join as $dlm_id=>$m_ary) {
             foreach ($join as $dlm_id_f=>$m_ary_f) {
@@ -168,17 +169,22 @@ class WebDLMController {
                                 $all_match = false;
                         }
                         if ($all_match)
-                            $merge[] = array_merge($row, $row_f, array('conn_count'=>$conn_count));
+                            $merge[] = array_merge($row, $row_f);
                     }
                 }
             }
         }
+
+        usort($merge, "WebDLMController::sort_by_array_size");
+/*        
         if (count($merge) > 0) {
             $filter = array();
             $filter[] = $merge[0];
             foreach ($merge as $row_m) {
                 $is_unique = false;
                 foreach($filter as $id=>$row_f) {
+                    foreach ($row_m as )
+
                     $tmp = array_diff_assoc($row_m, $row_f);
                     if (count($tmp) != 0) {
                         $is_unique = true;
@@ -189,14 +195,17 @@ class WebDLMController {
                     $filter[] = $row_m;
             }
         }
+*/
 
-
-        $data['JOIN']['DATA'] = $filter;
+        $data['JOIN']['DATA'] = $merge;
         
         // Return the data
         return $data;
     }
     
+    static public function sort_by_array_size($a, $b) {
+        return count($a) > count($b);
+    }
     private function run_one_dlm($dlm_id, $request) {
         $type = strtolower($request->get_type());
         $data = array();
