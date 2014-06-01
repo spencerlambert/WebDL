@@ -162,7 +162,7 @@ class WebDLMController {
                     foreach($m_ary_f as $row_f) {
                         foreach ($needed_connectors as $connectors) {
                             foreach ($connectors as $connector) {
-                                if (in_array($connector->c_id, $row_f) && in_array($connector->c_id_f, $row)) {
+                                if (isset($row_f[$connector->c_id]) && isset($row[$connector->c_id_f])) {
                                     if ($row[$connector->c_id] == $row_f[$connector->c_id] && $row[$connector->c_id_f] == $row_f[$connector->c_id_f])
                                         array_merge($row, $row_f);
                                 }
