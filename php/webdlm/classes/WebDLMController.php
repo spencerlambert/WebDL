@@ -168,7 +168,7 @@ class WebDLMController {
                                 $all_match = false;
                         }
                         if ($all_match)
-                            $merge[] = array_merge($row, $row_f, array('conn_count'=>$conn_count);
+                            $merge[] = array_merge($row, $row_f, array('conn_count'=>$conn_count));
                     }
                 }
             }
