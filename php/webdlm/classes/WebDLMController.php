@@ -204,7 +204,7 @@ class WebDLMController {
     }
     
     static public function sort_by_array_size($a, $b) {
-        return count($a) > count($b);
+        return count($a) < count($b);
     }
     private function run_one_dlm($dlm_id, $request) {
         $type = strtolower($request->get_type());
