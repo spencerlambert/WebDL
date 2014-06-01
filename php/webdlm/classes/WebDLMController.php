@@ -184,7 +184,9 @@ class WebDLMController {
         $filter = array();
         if (count($merge) > 0) {
             // pre-load the filter array with the top returned value, this gives us something to compare with.
-            $filter[] = $merge[0];
+            $k_sort = $merge[0];
+            ksort($k_sort);
+            $filter[] = $k_sort;
             foreach ($merge as $row_m) {
                 $is_uniqe_row = true;
                 foreach($filter as $row_f) {
@@ -194,8 +196,11 @@ class WebDLMController {
                         break;
                     }
                 }
-                if ($is_uniqe_row)
-                    $filter[] = $row_m;
+                if ($is_uniqe_row) {
+                    $k_sort = $row_m;
+                    ksort($k_sort);
+                    $filter[] = $k_sort;
+                }
             }
         }
 
