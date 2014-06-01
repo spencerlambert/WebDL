@@ -165,7 +165,7 @@ class WebDLMController {
                         //if all the rows in one array match the other, then merge the extra data.
                         $all_match = true;
                         foreach ($row as $col=>$val) {
-                            if (isset($row_f[$col])
+                            if (isset($row_f[$col]))
                                 if ($row_f[$col] !== $val)
                                     $all_match = false;
                         }
@@ -188,13 +188,8 @@ class WebDLMController {
             foreach ($merge as $row_m) {
                 $is_uniqe_row = true;
                 foreach($filter as $row_f) {
-                    $all_match = true;
-                    foreach ($row_m as $col_m=>$val_m) {
-                        if (isset($row_f[$col_m))
-                            if ($row_f[$col_m] !== $val_m)
-                                $all_match == false;
-                    }
-                    if ($all_match) {
+                    $test = array_diff_assoc($row_m, $row_f);
+                    if (count($test) == 0) {
                         $is_uniqe_row = false;
                         break;
                     }
