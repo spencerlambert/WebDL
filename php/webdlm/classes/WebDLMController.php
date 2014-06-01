@@ -154,20 +154,23 @@ class WebDLMController {
                 }
             }
         }// end if count()
+        
         $merge = array();
         foreach ($join as $dlm_id=>$m_ary) {
             foreach ($join as $dlm_id_f=>$m_ary_f) {
                 if ($dlm_id == $dlm_id_f) continue;
                 foreach ($m_ary as $row) {
                     foreach($m_ary_f as $row_f) {
-                        foreach ($needed_connectors as $connectors) {
-                            foreach ($connectors as $connector) {
-                                if (isset($row_f[$connector->c_id]) && isset($row[$connector->c_id_f])) {
-                                    if ($row[$connector->c_id] == $row_f[$connector->c_id] && $row[$connector->c_id_f] == $row_f[$connector->c_id_f])
-                                        array_merge($row, $row_f);
-                                }
-                            }
+                        //if all the rows in both match, then merge.
+                        $all_match = true;
+                        $has_diff = false;
+                        foreach ($row as $col=>$val) {
+                            if (in_array($col, $row_f) && $row[$col] !== $val)
+                                $all_match = false;
+                            if (!in_array($col, $row_f))
+                                $has_diff = true;
                         }
+                        if ($all_match && $has_diff) $merge[] = array_merge($row, $row_f);
                     }
                 }
             }
