@@ -155,18 +155,19 @@ class WebDLMController {
             }
         }// end if count()
         
-        
+        // Merge the rows that match the connector values.
         $merge = array();
         foreach ($join as $dlm_id=>$m_ary) {
             foreach ($join as $dlm_id_f=>$m_ary_f) {
                 if ($dlm_id == $dlm_id_f) continue;
                 foreach ($m_ary as $row) {
                     foreach($m_ary_f as $row_f) {
-                        //if all the rows in both match, then merge.
+                        //if all the rows in one array match the other, then merge the extra data.
                         $all_match = true;
                         foreach ($row as $col=>$val) {
-                            if (in_array($col, $row_f) && $row[$col] !== $val)
-                                $all_match = false;
+                            if (isset($row_f[$col])
+                                if ($row_f[$col] !== $val)
+                                    $all_match = false;
                         }
                         if ($all_match)
                             $merge[] = array_merge($row, $row_f);
@@ -175,29 +176,35 @@ class WebDLMController {
             }
         }
 
+        // Make sure the rows with the most columns are reviewed first,
+        // this keeps the rows with partially data out.
         usort($merge, "WebDLMController::sort_by_array_size");
-/*        
+
+        // Selete only the rows that have unique values.
+        $filter = array();
         if (count($merge) > 0) {
-            $filter = array();
+            // pre-load the filter array with the top returned value, this gives us something to compare with.
             $filter[] = $merge[0];
             foreach ($merge as $row_m) {
-                $is_unique = false;
-                foreach($filter as $id=>$row_f) {
-                    foreach ($row_m as )
-
-                    $tmp = array_diff_assoc($row_m, $row_f);
-                    if (count($tmp) != 0) {
-                        $is_unique = true;
+                $is_uniqe_row = true;
+                foreach($filter as $row_f) {
+                    $all_match = true;
+                    foreach ($row_m as $col_m=>$val_m) {
+                        if (isset($row_f[$col_m))
+                            if ($row_f[$col_m] !== $val_m)
+                                $all_match == false;
+                    }
+                    if ($all_match) {
+                        $is_uniqe_row = false;
                         break;
                     }
                 }
-                if ($is_unique)
+                if ($is_uniqe_row)
                     $filter[] = $row_m;
             }
         }
-*/
 
-        $data['JOIN']['DATA'] = $merge;
+        $data['JOIN']['DATA'] = $filter;
         
         // Return the data
         return $data;
