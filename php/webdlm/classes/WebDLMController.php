@@ -180,7 +180,7 @@ class WebDLMController {
         // this keeps the rows with partially data out.
         usort($merge, "WebDLMController::sort_by_array_size");
 
-        // Selete only the rows that have unique values.
+        // Filter only the rows that have unique values.
         $filter = array();
         if (count($merge) > 0) {
             // pre-load the filter array with the top returned value, this gives us something to compare with.
@@ -191,11 +191,13 @@ class WebDLMController {
                 $is_uniqe_row = true;
                 foreach($filter as $row_f) {
                     $test = array_diff_assoc($row_m, $row_f);
+                    // If there are no real differences, then we don't have a new unique row.
                     if (count($test) == 0) {
                         $is_uniqe_row = false;
                         break;
                     }
                 }
+                // We have a new row to add to our list
                 if ($is_uniqe_row) {
                     $k_sort = $row_m;
                     ksort($k_sort);
