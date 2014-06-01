@@ -160,13 +160,14 @@ class WebDLMController {
                 if ($dlm_id == $dlm_id_f) continue;
                 foreach ($m_ary as $row) {
                     foreach($m_ary_f as $row_f) {
-                        //if all the rows in both match, then merge.
-                        $all_match = true;
-                        foreach ($row as $col=>$val) {
-                            if (in_array($col, $row_f) && $row[$col] !== $val)
-                                $all_match = false;
+                        foreach ($needed_connectors as $connectors) {
+                            foreach ($connectors as $connector) {
+                                if (in_array($connector->c_id, $row_f) && in_array($connector->c_id_f, $row)) {
+                                    if ($row[$connector->c_id] == $row_f[$connector->c_id] && $row[$connector->c_id_f] == $row_f[$connector->c_id_f])
+                                        array_merge($row, $row_f);
+                                }
+                            }
                         }
-                        if ($all_match) $merge[] = array_merge($row, $row_f);
                     }
                 }
             }
