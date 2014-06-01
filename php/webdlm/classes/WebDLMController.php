@@ -205,7 +205,9 @@ class WebDLMController {
                 }
             }
         }
-
+        
+        // TODO: This has only been tested on a three DLM join, it may not fully join more DLMs into a single row.
+        
         $data['JOIN']['DATA'] = $filter;
         
         // Return the data
