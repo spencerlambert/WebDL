@@ -21,7 +21,7 @@ class WebDLMResult {
     public function push_column_link($c_id, $val, $data) {
         if (!isset($this->row_links[$c_id."-".$val]))
             $this->row_links[$c_id."-".$val] = array();
-        $row_links[$c_id."-".$val][] = $data;        
+        $this->row_links[$c_id."-".$val][] = $data;        
     }
     
     public function get_dlm_data($dlm_id) {
