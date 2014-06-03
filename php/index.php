@@ -1,7 +1,7 @@
 <?php
-    define('ABSPATH', dirname(__FILE__).'/');
-    require_once(ABSPATH.'setup/init.php');
+    define('WEBDL_ABSPATH', dirname(__FILE__).'/');
+    require_once(WEBDL_ABSPATH.'webdl/setup/init.php');
     
-    $controller = ControllerBase::get_requested_controller();
+    $controller = WebDLControllerBase::get_requested_controller();
     $controller->load_page();
 ?>
