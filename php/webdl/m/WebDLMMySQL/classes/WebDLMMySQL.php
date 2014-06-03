@@ -146,7 +146,7 @@ class WebDLMMySQL extends WebDLMBase {
         if (count($where_ary) != 0)
             $sql .= " WHERE ".implode(' AND ', $where_ary);
         //DEBUG: limit for testing
-        if (DEBUG) $sql .= " LIMIT 10";
+        if (WEBDL_DEBUG) $sql .= " LIMIT 10";
         $sth = $this->pdo->prepare($sql);
         $sth->execute($params);
 

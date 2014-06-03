@@ -11,7 +11,7 @@ abstract class WebDLMBase {
     
     protected function __construct($dlm_id) {
         $db = WebDLResourceManager::get("DB_MASTER_PDO");
-        $this->install_path = ABSPATH.'webdl/m/'.get_class($this).'/';
+        $this->install_path = WEBDL_ABSPATH.'webdl/m/'.get_class($this).'/';
         $this->dlm_id = $dlm_id;
         
         // Load all the config values
