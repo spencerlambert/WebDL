@@ -34,7 +34,7 @@ class WebDLResourceManager {
 			} catch (PDOException $e) {
 				WebDLUserMessage::output('Connection failed: ' . $e->getMessage(), 'WebDLResourceManager.php');
 			}
-		} elseif (class_exists($resource) && property_exists('ResourceManager', $resource)) {
+		} elseif (class_exists($resource) && property_exists('WebDLResourceManager', $resource)) {
 			self::$$resource = new $resource($options);
 		}
 	}
