@@ -4,7 +4,7 @@ class WebDLResourceManager {
 	private static $DB_MASTER_PDO;
 
 	public static function get($resource, $options = false) {
-		if (property_exists('ResourceManager', $resource)) {
+		if (property_exists('WebDLResourceManager', $resource)) {
 			if (empty(self::$$resource)) {
 				self::_init_resource($resource, $options);
 			}
