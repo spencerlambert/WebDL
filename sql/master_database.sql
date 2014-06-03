@@ -38,7 +38,7 @@ CREATE TABLE DLMTreeLink (
     DLMTreeColumnIDForeign  varchar(80),
     Type	            enum('OneToOne','OneToMany','ManyToMany'),
     PRIMARY KEY (DLMTreeColumnID, DLMTreeColumnIDForeign),
-    INDEX (DLMTreeTableID),
+    INDEX (DLMTreeColumnID),
     INDEX (DLMTreeColumnIDForeign)  
 );
 
@@ -51,8 +51,8 @@ CREATE TABLE DLMConnector (
     Type	            enum('OneToOne','OneToMany','ManyToMany'),
     KeyType                 enum('BothInt','BothVarchar','IntToVarchar','VarcharToInt'),
     PRIMARY KEY (ConnectorID),
-    INDEX (DLMID),
-    INDEX (ForeignDLMID)
+    INDEX (DLMTreeColumnIDPrimary),
+    INDEX (DLMTreeColumnIDForeign)
 );
 
 CREATE TABLE DLMConnectorOneToOneBothInt (
@@ -158,7 +158,7 @@ CREATE TABLE DLMConnectorOneToOneVarcharToInt (
 CREATE TABLE DLMConnectorOneToManyVarcharToInt (
     ConnectorID         int UNSIGNED,
     PrimaryKey          varchar(80),
-    ForeignKey          int
+    ForeignKey          int,
     PRIMARY KEY (ConnectorID, ForeignKey),
     INDEX (ConnectorID),
     INDEX (PrimaryKey),
@@ -168,7 +168,7 @@ CREATE TABLE DLMConnectorOneToManyVarcharToInt (
 CREATE TABLE DLMConnectorManyToManyVarcharToInt (
     ConnectorID         int UNSIGNED,
     PrimaryKey          varchar(80),
-    ForeignKey          int
+    ForeignKey          int,
     PRIMARY KEY (ConnectorID, PrimaryKey, ForeignKey),
     INDEX (ConnectorID),
     INDEX (PrimaryKey),
