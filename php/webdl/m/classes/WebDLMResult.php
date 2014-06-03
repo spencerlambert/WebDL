@@ -45,7 +45,7 @@ class WebDLMResult {
                         if (isset($this->row_links[$name])) {
                             if (!isset($join[$dlm_id]))
                                 $join[$dlm_id] = array();
-                            foreach ($row_links[$name] as $id=>$link) {
+                            foreach ($this->row_links[$name] as $id=>$link) {
                                 $join[$dlm_id][] = array_merge($row, $link);                            
                             }
                         }
