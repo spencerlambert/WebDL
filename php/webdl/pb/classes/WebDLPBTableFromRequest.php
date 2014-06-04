@@ -7,6 +7,7 @@ class WebDLPBTableFromRequest extends WebDLPBBase {
     
     public function __construct($unique_id) {
         $this->request = new WebDLRequest();
+        parent::__construct($unique_id);
     }
     
     public function push_column($c_id, $c_name) {
