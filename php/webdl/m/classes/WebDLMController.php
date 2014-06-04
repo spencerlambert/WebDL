@@ -34,7 +34,7 @@ class WebDLMController {
         // up a better way of doing this.
         self::$connectors = WebDLMConnector::get_connectors();
         
-        self::$initialize = true;
+        self::$initialized = true;
 
     }
     
