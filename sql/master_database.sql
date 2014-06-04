@@ -26,6 +26,7 @@ CREATE TABLE DLMTreeColumn (
     DLMTreeTableID      int UNSIGNED,
     Name                varchar(80),
     Type                enum('Numeric','String','Text'),
+    IsKey               enum('Yes','No'),
     PRIMARY KEY (DLMTreeColumnID),
     INDEX (DLMTreeTableID)
 );
