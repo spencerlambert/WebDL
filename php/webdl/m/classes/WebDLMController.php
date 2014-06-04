@@ -33,6 +33,8 @@ class WebDLMController {
         // Not sure how much I like how the array is put together.  Need to think
         // up a better way of doing this.
         self::connectors = WebDLMConnector::get_connectors();
+        
+        self::initialize = true;
 
     }
     
