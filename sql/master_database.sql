@@ -43,6 +43,22 @@ CREATE TABLE DLMTreeLink (
     INDEX (DLMTreeColumnIDForeign)  
 );
 
+CREATE TABLE RecordModel (
+    RecordModelID       varchar(80) UNIQUE NOT NULL,
+    Name                varchar(80),
+    PRIMARY KEY (RecordModelID)
+);
+
+CREATE TABLE RecordModelHasA (
+    RecordModelID       varchar(80),
+    HasAID              varchar(80),
+    Name                varchar(80),
+    Type                enum('DLMTreeColumn','RecordModel'),
+    Count               enum('One','Many'),
+    PRIMARY KEY (RecordModelID, HasAID, Type),
+    INDEX (RecordModelID),
+    INDEX (HasAID)
+);
 
 CREATE TABLE DLMConnector (
     ConnectorID             int UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -217,6 +233,12 @@ CREATE TABLE Page (
 
 INSERT INTO Page VALUES (NULL,'Test','/test/','<WebPB><WebPBHTML><HTML><![CDATA[<h1>Testing!</h1>]]></HTML></WebPBHTML></WebPB>','Open To World','app');
 INSERT INTO Page VALUES (NULL,'Test','/test/no_class/','<WebPB><WebPBHTML><HTML><![CDATA[<h1>No Class Testing!</h1>]]></HTML></WebPBHTML><WebPBNoClass><HTML><![CDATA[<h1>Testing!</h1>]]></HTML></WebPBNoClass></WebPB>','Open To World','app');
+
+CREATE TABLE PageBlock (
+    PageBlockID         varchar(80),
+    ClassName           varchar(80),
+    
+);
 
 # Any user/role combo in table will have access to that page.
 CREATE TABLE PageACL (
