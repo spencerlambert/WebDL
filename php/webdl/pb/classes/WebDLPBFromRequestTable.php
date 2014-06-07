@@ -1,5 +1,5 @@
 <?php
-class WebDLPBTableFromRequest extends WebDLPBBase {
+class WebDLPBFromRequestTable extends WebDLPFromRequest {
     
     protected $request;
     protected $result;
