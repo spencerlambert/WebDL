@@ -3,7 +3,6 @@ class WebDLPBFromRequest extends WebDLPBBase {
     
     protected $request;
     protected $result;
-    protected $header = array();
     
     public function __construct($unique_id) {
         $this->request = new WebDLRequest();
@@ -18,19 +17,31 @@ class WebDLPBFromRequest extends WebDLPBBase {
     public function push_match($c_id, $m_val, $type='AND') {
         $this->request->push_match($c_id, $m_val, $type); 
     }
-    
-    public function finish() {
-        $this->result = WebDLMController::dlm_request($this->request);
-        $this->set_html();
-    }
-    
-    private function set_html() {
-        $this->html = $this->get_angularjs();
-        $this->html .= $this->get_div();
-    }
-    
-    private function get_div() {
         
+    private function get_angularjs() {
+        $js = '
+            <script>
+                function '.$this->unique_id.'Ctrl($scope) {
+                    $scope.data = ;
+                    $scope.columns = ;
+                    $scope.matches = ;
+                    
+                    $scope.reset_matches = function () {
+                        $scope.matches = [];
+                    }
+                    
+                    $scope.push_match = function (match_json) {
+                        $scope.matches.push(match_json);
+                    }
+                    
+                    $scope.update = function () {
+                        
+                    }
+                    
+                }
+            </script>
+        ';
+        return $js;
     }
     
     
