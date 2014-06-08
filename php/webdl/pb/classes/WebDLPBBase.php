@@ -18,8 +18,10 @@ abstract class WebDLPBBase {
     
     // This is a function that all page blocks need to implement.
     // It is commonly called prior to get_html().
-    abstract public function set_html();
+    abstract protected function set_html();
 
+    // This function is called after all changes have been applied and the HTML needs to be generated
+    abstract public function finish();
     
 }
 

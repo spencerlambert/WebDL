@@ -43,7 +43,7 @@ abstract class WebDLPBFromRequest extends WebDLPBBase {
     }
     
     // The AngularJS code that creates the model and ajax call back function.
-    private function get_angularjs() {
+    protected function get_angularjs() {
         $json = json_encode($this->result->get_joined_data());
         $js = '
             <script>

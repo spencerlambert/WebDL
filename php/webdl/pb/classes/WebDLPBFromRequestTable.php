@@ -17,13 +17,13 @@ class WebDLPBFromRequestTable extends WebDLPBFromRequest {
     }
     
     // Get both the AngularJS and the DIV of the table, and set the HTML var.
-    private function set_html() {
+    protected function set_html() {
         $this->html = $this->get_angularjs();
         $this->html .= $this->get_div();
     }
     
     // Get the DIV that contains the HTML table.
-    private function get_div() {
+    protected function get_div() {
         $html = '
             <div ng-controller="'.$this->unique_id.'Ctrl">
                 <table>
