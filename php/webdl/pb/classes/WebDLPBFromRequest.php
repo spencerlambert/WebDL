@@ -8,6 +8,8 @@ abstract class WebDLPBFromRequest extends WebDLPBBase {
     
     protected $request;
     protected $result;
+    protected $c_list = array();
+    protected $m_list = array();
     
     public function __construct($unique_id) {
         // Create a DML Request to use.
@@ -18,11 +20,19 @@ abstract class WebDLPBFromRequest extends WebDLPBBase {
     // Add a column to the request
     public function push_column($c_id) {
         $this->request->push_column($c_id);
+        // Save the list of columns to be used as params in the AJAX update
+        $this->c_list[] = $c_id;
     }
 
     // Add a match value to the request
     public function push_match($c_id, $m_val, $type='AND') {
-        $this->request->push_match($c_id, $m_val, $type); 
+        $this->request->push_match($c_id, $m_val, $type);
+        // Save the match in a list for the AngualarJS AJAX update
+        $match = array();
+        $match['c_id'] = $c_id;
+        $match['m_val'] = $m_val;
+        $match['type'] = $type;
+        $m_list[] = $match;
     }
 
     // When the desired request has been built, then call this to
@@ -36,19 +46,20 @@ abstract class WebDLPBFromRequest extends WebDLPBBase {
     
     // The AngularJS code that creates the model and ajax call back function.
     private function get_angularjs() {
+        $json = json_encode($this->result->get_joined_data());
         $js = '
             <script>
                 function '.$this->unique_id.'Ctrl($scope) {
-                    $scope.data = ;
-                    $scope.columns = ;
-                    $scope.matches = ;
+                    $scope.data = '.$json.';
+                    $scope.columns = '.json_encode($this->c_list).';
+                    $scope.matches = '.json_encode($this->m_list).';
                     
                     $scope.reset_matches = function () {
                         $scope.matches = [];
                     }
                     
-                    $scope.push_match = function (match_json) {
-                        $scope.matches.push(match_json);
+                    $scope.push_match = function (c_id, m_val, type) {
+                        $scope.matches.push(JSON.stringify({c_id: c_id, m_val: m_val, type: type}));
                     }
                     
                     $scope.update = function () {

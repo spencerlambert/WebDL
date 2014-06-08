@@ -30,6 +30,10 @@ class WebDLMResult {
         return $this->dlm_result[$dlm_id]->data;
     }
     
+    public function get_dlm_ids() {
+        return array_keys($this->dlm_result);
+    }
+    
     public function get_joined_data() {
     
         // Join the data if needed.
@@ -103,6 +107,12 @@ class WebDLMResult {
                     $filter[] = $k_sort;
                 }
             }
+        }
+        
+        // If there is no filtered data and only a sinlge DLM involded in the request, then return the data from that DLM.
+        if (count($filter) == 0 && count($this->dlm_result) == 1) {
+            $dlm_ids = $this->get_dlm_ids();
+            return $this->get_dlm_data($dlm_ids[0]);
         }
         
         // TODO: This has only been tested on a three DLM join, it may not fully join more DLMs into a single row.
