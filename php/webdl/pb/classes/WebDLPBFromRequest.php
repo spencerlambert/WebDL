@@ -41,8 +41,6 @@ abstract class WebDLPBFromRequest extends WebDLPBBase {
         $this->result = WebDLMController::dlm_request($this->request);
         $this->set_html();
     }
-
-    abstract public function set_html();
     
     // The AngularJS code that creates the model and ajax call back function.
     private function get_angularjs() {
