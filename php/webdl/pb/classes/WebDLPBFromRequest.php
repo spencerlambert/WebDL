@@ -13,7 +13,7 @@ abstract class WebDLPBFromRequest extends WebDLPBBase {
     
     public function __construct($unique_id) {
         // Create a DML Request to use.
-        $this->request = new WebDLRequest();
+        $this->request = new WebDLMRequest();
         parent::__construct($unique_id);
     }
     
