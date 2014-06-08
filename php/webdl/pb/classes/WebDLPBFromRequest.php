@@ -79,15 +79,16 @@ abstract class WebDLPBFromRequest extends WebDLPBBase {
                 function '.$this->unique_id.'Ctrl($scope) {
                     $scope.data = '.$json.';
                     $scope.ajax_id = "'.$this->unique_id.'Ctrl";
-                    $scope.columns = '.json_encode($this->c_list).';
-                    $scope.matches = '.json_encode($this->m_list).';
+                    $scope.ajax_class = "WebDLPBFromRequest";
+                    $scope.ajax_function = "return_ajax";
+                    $scope.ajax_matches = '.json_encode($this->m_list).';
                     
                     $scope.reset_matches = function () {
-                        $scope.matches = [];
+                        $scope.ajax_matches = [];
                     }
                     
                     $scope.push_match = function (c_id, m_val, type) {
-                        $scope.matches.push(JSON.stringify({c_id: c_id, m_val: m_val, type: type}));
+                        $scope.ajax_matches.push(JSON.stringify({c_id: c_id, m_val: m_val, type: type}));
                     }
                     
                     $scope.update = function () {
