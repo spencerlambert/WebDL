@@ -3,7 +3,7 @@
  * This class uses the FromRequest page block to build an HTML table using the
  * pushed columns of a DLM Request.
  */
-class WebDLPBFromRequestTable extends WebDLPFromRequest {
+class WebDLPBFromRequestTable extends WebDLPBFromRequest {
     
     protected $header = array();
     
