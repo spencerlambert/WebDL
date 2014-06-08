@@ -61,8 +61,8 @@ abstract class WebDLPBFromRequest extends WebDLPBBase {
     
     // Rerun the request and return fresh data
     static public function return_ajax() {
-        if (!isset($_REQUEST['ajax_id'])) return WebDLAjax::JSONEmptyArray();
-        if (!isset($_SESSION[$_REQUEST['ajax_id'])) return WebDLAjax::JSONEmptyArray();
+        if (!isset($_REQUEST['ajax_id'])) return WebDLAjax::json_empty_array();
+        if (!isset($_SESSION[$_REQUEST['ajax_id'])) return WebDLAjax::json_empty_array();
     }
     
     // The AngularJS code that creates the model and ajax call back function.
@@ -79,8 +79,7 @@ abstract class WebDLPBFromRequest extends WebDLPBBase {
                 function '.$this->unique_id.'Ctrl($scope) {
                     $scope.data = '.$json.';
                     $scope.ajax_id = "'.$this->unique_id.'Ctrl";
-                    $scope.ajax_class = "WebDLPBFromRequest";
-                    $scope.ajax_function = "return_ajax";
+                    $scope.ajax_uri = "/webdl.php/ajax/WebDLPBFromRequest/return_ajax/";
                     $scope.ajax_matches = '.json_encode($this->m_list).';
                     
                     $scope.reset_matches = function () {
