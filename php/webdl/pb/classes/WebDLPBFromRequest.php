@@ -10,6 +10,7 @@ abstract class WebDLPBFromRequest extends WebDLPBBase {
     protected $result;
     protected $c_list = array();
     protected $m_list = array();
+    protected $update_match = false;
     
     public function __construct($unique_id) {
         // Create a DML Request to use.
@@ -39,7 +40,29 @@ abstract class WebDLPBFromRequest extends WebDLPBBase {
     // fetch the data from the DLM(s) and set the HTML.
     public function finish() {
         $this->result = WebDLMController::dlm_request($this->request);
+        $this->register_ajax();
         $this->set_html();
+    }
+    // Sets if the match on item can be changed from the AJAX call back.
+    // I may not be very secure turning this option on.
+    public function can_update_match() {
+        $this->update_match = true;
+    }
+    
+    // Save the request in the session, so that it can be controlled when the
+    // update JS function is called.
+    protected function register_ajax() {
+        $values = array();
+        $values['update_match'] = $this->update_match;
+        $values['c_list'] = $this->c_list;
+        $values['m_list'] = $this->m_list;
+        $_SESSION[$this->unique_id.'Ctrl'] = $values;
+    }
+    
+    // Rerun the request and return fresh data
+    static public function return_ajax() {
+        if (!isset($_REQUEST['ajax_id'])) return WebDLAjax::JSONEmptyArray();
+        if (!isset($_SESSION[$_REQUEST['ajax_id'])) return WebDLAjax::JSONEmptyArray();
     }
     
     // The AngularJS code that creates the model and ajax call back function.
@@ -47,12 +70,15 @@ abstract class WebDLPBFromRequest extends WebDLPBBase {
     // made to fetch unauthorized data.  An ACL on columns and forced matches could solve
     // it, but that will be a chore to configure.  Right now this function is being used
     // on data that does not require security, but it will need to be made secure.
+    // UPDATE: Might have a secure way of making the AJAX call backs, using a session value
+    // to store the origial request, and add an option to allow updating on the match.
     protected function get_angularjs() {
         $json = json_encode($this->result->get_joined_data());
         $js = '
             <script>
                 function '.$this->unique_id.'Ctrl($scope) {
                     $scope.data = '.$json.';
+                    $scope.ajax_id = "'.$this->unique_id.'Ctrl";
                     $scope.columns = '.json_encode($this->c_list).';
                     $scope.matches = '.json_encode($this->m_list).';
                     
