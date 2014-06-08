@@ -1,11 +1,10 @@
-# webdl Folder
+### webdl folder
 
 The webdl folder contains all the classes used for a WebDL project.  It's designed in a single folder to 
 allow for installation into exsisting PHP projects.
 
 Here is an example for calling a pb (Page Block) within a PHP project.
 
-`
 <?php
     // Tell WebDL where it's been installed.
     define('WEBDL_ABSPATH', dirname(__FILE__).'/');
@@ -25,14 +24,14 @@ Here is an example for calling a pb (Page Block) within a PHP project.
     // display the table.
     echo $table->get_html();
 ?>
-`
 
-# .htaccess
+
+### .htaccess
 
 This is a sample htaccess file that will rewrite the URL and pass it to the webdl.php file.  Use this option if building a
 new WebDL project.
 
-# webdl.php
+### webdl.php
 
 This file sets up the WebDL project and loads the requeted controller.  It then calls the load_page() function
 of the controller.  The URL is parsed to figure out the controller type and the requested page.
