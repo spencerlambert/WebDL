@@ -13,22 +13,22 @@ class WebDLControllerBase {
     }
     
     public function display_header() {
-        $html = file_get_contents(WEBDL_ABSPATH."webdl/template/".TEMPLATE_NAME."/header.html");
+        $html = file_get_contents(WEBDL_ABSPATH."webdl/template/".WEBDL_TEMPLATE_NAME."/header.html");
         $html = $this->replace_data($html, true);
     }
     
     public function display_footer() {
-        $html = file_get_contents(WEBDL_ABSPATH."webdl/template/".TEMPLATE_NAME."/footer.html");
+        $html = file_get_contents(WEBDL_ABSPATH."webdl/template/".WEBDL_TEMPLATE_NAME."/footer.html");
         $html = $this->replace_data($html, true);
     }
 
     public function display_page() {
-        $html = file_get_contents(WEBDL_ABSPATH."webdl/template/".TEMPLATE_NAME."/page.html");
+        $html = file_get_contents(WEBDL_ABSPATH."webdl/template/".WEBDL_TEMPLATE_NAME."/page.html");
         $html = $this->replace_data($html, true);        
     }
 
     public function display_not_found() {
-        $html = file_get_contents(WEBDL_ABSPATH."webdl/template/".TEMPLATE_NAME."/not_found.html");
+        $html = file_get_contents(WEBDL_ABSPATH."webdl/template/".WEBDL_TEMPLATE_NAME."/not_found.html");
         $html = $this->replace_data($html, true);
     }
     
