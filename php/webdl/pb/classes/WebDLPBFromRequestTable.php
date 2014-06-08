@@ -6,6 +6,7 @@
 class WebDLPBFromRequestTable extends WebDLPBFromRequest {
     
     protected $header = array();
+    protected $css_class = '';
     
     public function __construct($unique_id) {
         parent::__construct($unique_id);
@@ -22,10 +23,15 @@ class WebDLPBFromRequestTable extends WebDLPBFromRequest {
         $this->html .= $this->get_div();
     }
     
+    // Change the table type to things like table-striped, table-bordered, etc.  See Bootstrap documentation.
+    public function set_bootstrap_table_type($css_class) {
+        $this->css_class = ' '.$css_class;
+    }
+    
     // Get the DIV that contains the HTML table.
     protected function get_div() {
         $html = '
-            <div ng-controller="'.$this->unique_id.'Ctrl">
+            <div class="table'.$this->css_class.'" ng-controller="'.$this->unique_id.'Ctrl">
                 <table>
                     <tr>';
                     foreach ($this->header as $c_id=>$header) {
