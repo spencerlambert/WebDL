@@ -39,7 +39,8 @@ class WebDLMTree {
     }
     
     public function get_required_tables($request) {
-        // Return combined arrays
+        // Return combined arrays; using + rather than array_merge(),
+        // becuase we just want to add the new columns, and not append data to columns already in the array.
         return $this->get_column_tables($request) + $this->get_match_tables($request);
     }
     
