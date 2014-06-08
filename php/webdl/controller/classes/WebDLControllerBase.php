@@ -92,7 +92,11 @@ class WebDLControllerBase {
     public static function get_request_parts() {
         
         //Make sure the url is all in lower case
-        $redirect_url = strtolower($_SERVER['REDIRECT_URL']);
+        $redirect_url = "/app/"; // set a controller, for when the PATH_INFO and REDIRECT_URL are not set.
+        if (isset($_SERVER['PATH_INFO']))
+            $redirect_url = strtolower($_SERVER['PATH_INFO']);
+        if (isset($_SERVER['REDIRECT_URL']))
+            $redirect_url = strtolower($_SERVER['REDIRECT_URL']);
         
         //Build a list of controler types bases on the directories in the controller folder
         $controller_dirs = glob(WEBDL_ABSPATH."/webdl/controller/*", GLOB_ONLYDIR);
