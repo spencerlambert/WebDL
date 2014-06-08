@@ -43,6 +43,10 @@ abstract class WebDLPBFromRequest extends WebDLPBBase {
     }
     
     // The AngularJS code that creates the model and ajax call back function.
+    // ToDo: What is a way to secure the AJAX call so that it a custom request can't be
+    // made to fetch unauthorized data.  An ACL on columns and forced matches could solve
+    // it, but that will be a chore to configure.  Right now this function is being used
+    // on data that does not require security, but it will need to be made secure.
     protected function get_angularjs() {
         $json = json_encode($this->result->get_joined_data());
         $js = '
