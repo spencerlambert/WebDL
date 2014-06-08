@@ -85,5 +85,6 @@ if (WEBDL_DEBUG) {
     ini_set("display_errors", 1);
 }
 
-session_start();
+// Only start a session if one is not already going.
+if(!isset($_SESSION)) session_start();
 ?>

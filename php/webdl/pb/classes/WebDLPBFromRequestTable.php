@@ -33,18 +33,22 @@ class WebDLPBFromRequestTable extends WebDLPBFromRequest {
         $html = '
             <div class="table'.$this->css_class.'" ng-controller="'.$this->unique_id.'Ctrl">
                 <table>
-                    <tr>';
-                    foreach ($this->header as $c_id=>$header) {
-                        $html .= '<th>'.$header.'</th>';
-                    }
+                    <thead>
+                        <tr>';
+                        foreach ($this->header as $c_id=>$header) {
+                            $html .= '<th>'.$header.'</th>';
+                        }
         $html .= '
-                    </tr>
-                    <tr ng-repeat="row in data">';
-                    foreach ($this->header as $c_id=>$header) {
-                        $html .= '<td>{{row.'.$c_id.'}}</td>';
-                    }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="row in data">';
+                        foreach ($this->header as $c_id=>$header) {
+                            $html .= '<td>{{row.'.$c_id.'}}</td>';
+                        }
         $html .= '
-                    </tr>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         ';
