@@ -104,7 +104,7 @@ abstract class WebDLPBFromRequest extends WebDLPBBase {
                     $scope.ajax_uri = "/webdl.php/ajax/WebDLPBFromRequest/return_ajax/";';
                     // Don't like triming the brackets.  Like to find a better way to get the json data to output
                     // in the $http request below and include the brackets when you reset_matches() and push_matches().
-        $js .= '    $scope.ajax_matches = '.trim(json_encode($this->m_list), '[]').';
+        $js .= '    $scope.ajax_matches = '."'".trim(json_encode($this->m_list), '[]')."'".';
                     
                     $scope.reset_matches = function () {
                         $scope.ajax_matches = [];
