@@ -59,10 +59,32 @@ abstract class WebDLPBFromRequest extends WebDLPBBase {
         $_SESSION[$this->unique_id.'Ctrl'] = $values;
     }
     
-    // Rerun the request and return fresh data
+    // Re-run the request and return fresh data
     static public function return_ajax() {
         if (!isset($_REQUEST['ajax_id'])) return WebDLAjax::json_empty_array();
         if (!isset($_SESSION[$_REQUEST['ajax_id'])) return WebDLAjax::json_empty_array();
+        
+        // Add the columns
+        $request = new WebDLMRequest();
+        foreach ($_SESSION[$_REQUEST['ajax_id']['c_list'] as $c_id) {
+            $request->push_column($c_id);
+        }
+        
+        // Add the match on values
+        if ($_SESSION[$_REQUEST['ajax_id']['update_match']) {
+            $m_list = json_decode($_REQUEST['ajax_matches']);
+        } else {
+            $m_list = $_SESSION[$_REQUEST['ajax_id']['m_list'];
+        }
+        foreach ($m_list as $match) {
+            $request->push_match($match['c_id'], $match['m_val'], $match['type']);
+        }
+        
+        // Send the request to the DLM controller
+        $result = WebDLMController::dlm_request($request);
+        
+        // Return the json data
+        return  json_encode($result->get_joined_data());
     }
     
     // The AngularJS code that creates the model and ajax call back function.
@@ -91,7 +113,16 @@ abstract class WebDLPBFromRequest extends WebDLPBBase {
                     }
                     
                     $scope.update = function () {
-                        
+                        $http({
+                            method: "POST",
+                            url: $scope.ajax_uri,
+                            data: "ajax_id=" + $scope.ajax_id + "&" + "ajax_matches=" + $scope.ajax_matches,
+                            headers: {"Content-Type": "application/x-www-form-urlencoded"}
+                        }).
+                        success(function(data, status) {
+                            $scope.data = data;
+                        }).
+                        error(function(data, status) {});
                     }
                     
                 }
