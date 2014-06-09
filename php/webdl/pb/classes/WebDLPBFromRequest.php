@@ -101,8 +101,10 @@ abstract class WebDLPBFromRequest extends WebDLPBBase {
                 function '.$this->unique_id.'Ctrl($scope, $http) {
                     $scope.data = '.$json.';
                     $scope.ajax_id = "'.$this->unique_id.'Ctrl";
-                    $scope.ajax_uri = "/webdl.php/ajax/WebDLPBFromRequest/return_ajax/";
-                    $scope.ajax_matches = '.json_encode($this->m_list).';
+                    $scope.ajax_uri = "/webdl.php/ajax/WebDLPBFromRequest/return_ajax/";';
+                    // Don't like triming the brackets.  Like to find a better way to get the json data to output
+                    // in the $http request below and include the brackets when you reset_matches() and push_matches().
+        $js .= '    $scope.ajax_matches = '.trim(json_encode($this->m_list), '[]').';
                     
                     $scope.reset_matches = function () {
                         $scope.ajax_matches = [];
@@ -116,7 +118,7 @@ abstract class WebDLPBFromRequest extends WebDLPBBase {
                         $http({
                             method: "POST",
                             url: $scope.ajax_uri,
-                            data: "ajax_id=" + $scope.ajax_id + "&" + "ajax_matches=" + JSON.stringify($scope.ajax_matches) + "",
+                            data: "ajax_id=" + $scope.ajax_id + "&" + "ajax_matches=[" + $scope.ajax_matches + "]",
                             headers: {"Content-Type": "application/x-www-form-urlencoded"}
                         }).
                         success(function(data, status) {
