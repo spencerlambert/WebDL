@@ -98,7 +98,7 @@ abstract class WebDLPBFromRequest extends WebDLPBBase {
         $json = json_encode($this->result->get_joined_data());
         $js = '
             <script>
-                function '.$this->unique_id.'Ctrl($scope) {
+                function '.$this->unique_id.'Ctrl($scope, $http) {
                     $scope.data = '.$json.';
                     $scope.ajax_id = "'.$this->unique_id.'Ctrl";
                     $scope.ajax_uri = "/webdl.php/ajax/WebDLPBFromRequest/return_ajax/";
