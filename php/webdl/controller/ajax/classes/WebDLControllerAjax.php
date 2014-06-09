@@ -14,7 +14,7 @@ class WebDLControllerAjax extends WebDLControllerBase {
         }
         
         // Figure out what class and function is being requested for this Ajax call.
-        $tmp = explode("/", $redirect_url);
+        $tmp = explode("/", $ajax_calling_uri);
         if (count($tmp) < 3) {
             // Ajax call format is /ajax/[CLASS]/[FUNCTION]/, so we need at least three items in the array or else we can't continue.
             echo WebDLAjax::json_error("URI is not correct, needs to follow this style, /webdl.php/ajax/[class]/[function]/");
