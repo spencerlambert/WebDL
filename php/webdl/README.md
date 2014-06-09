@@ -28,11 +28,11 @@ you can push columns to get and add matches to filter data.
 "pb" is for Page Block.  These are standard ways to draw HTML on web pages.  They can be created and called to build full
 working pages.
 
-## setup folder
+### setup folder
 
 This contains the config.php, which you should configure to your specific setup, it also has the class auto loader and some
 other setup stuff.
 
-## template folder
+### template folder
 
 Here is where you confiure the CSS, header, footer and the look of your web application.
