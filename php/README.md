@@ -11,7 +11,6 @@ Here is an example for calling a pb (Page Block) within a PHP project.
     define('WEBDL_ABSPATH', dirname(__FILE__).'/');
     // Call the init.php file.
     require_once(WEBDL_ABSPATH.'/webdl/setup/init.php');
-    
     // Create a Table Page Block with the name "my_table"
     $table = new WebDLPBFromRequestTable('my_table');
     // add some coluumns 
@@ -19,7 +18,6 @@ Here is an example for calling a pb (Page Block) within a PHP project.
     $table->push_column('account_phone', 'Phone Number');
     // Tell the Page Block you are finished
     $table->finish();
-    
     // display the table.
     echo $table->get_html();
 ?>
