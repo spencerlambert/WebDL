@@ -1,7 +1,7 @@
 ### webdl folder
 
 The webdl folder contains all the classes used for a WebDL project.  It's designed in a single folder to 
-allow for installation into exsisting PHP projects, or work as the primary framwork to a web application.
+allow for installation into existing PHP projects, or work as the primary framwork to a web application.
 
 Here is an example for calling a pb (Page Block) within a PHP project.
 
