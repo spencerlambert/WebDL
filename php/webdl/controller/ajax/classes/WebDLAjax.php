@@ -9,7 +9,7 @@ class WebDLAjax {
     }
     
     static public function json_error($error) {
-        return json_decode(array('error'=>$error));
+        return json_encode(array('error'=>$error));
     }
 }
 ?>
