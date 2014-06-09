@@ -62,7 +62,7 @@ abstract class WebDLPBFromRequest extends WebDLPBBase {
     // Re-run the request and return fresh data
     static public function return_ajax() {
         if (!isset($_REQUEST['ajax_id'])) return WebDLAjax::json_empty_array();
-        if (!isset($_SESSION[$_REQUEST['ajax_id'])) return WebDLAjax::json_empty_array();
+        if (!isset($_SESSION[$_REQUEST['ajax_id']])) return WebDLAjax::json_empty_array();
         
         // Add the columns
         $request = new WebDLMRequest();
