@@ -3,7 +3,7 @@
 The webdl folder contains all the classes used for a WebDL project.  It's designed in a single folder to 
 allow for installation into existing PHP projects, or work as the primary framwork of a web application.
 
-Here is an example for calling a pb (Page Block) within a PHP project.
+Here is an example for calling a pb (Page Block) from within a PHP project.
 
 ```php
 <?php
