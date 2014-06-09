@@ -7,7 +7,7 @@ Here is an example for calling a pb (Page Block) from within a PHP project.
 
 ```php
 <?php
-    // Tell WebDL where its been installed.
+    // Tell WebDL where its been installed in relation to this file.
     define('WEBDL_ABSPATH', dirname(__FILE__).'/');
     // Call the init.php file.
     require_once(WEBDL_ABSPATH.'/webdl/setup/init.php');
