@@ -33,7 +33,7 @@ abstract class WebDLPBFromRequest extends WebDLPBBase {
         $match['c_id'] = $c_id;
         $match['m_val'] = $m_val;
         $match['type'] = $type;
-        $m_list[] = $match;
+        $this->m_list[] = $match;
     }
 
     // When the desired request has been built, then call this to
