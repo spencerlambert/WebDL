@@ -116,7 +116,7 @@ abstract class WebDLPBFromRequest extends WebDLPBBase {
                         $http({
                             method: "POST",
                             url: $scope.ajax_uri,
-                            data: "ajax_id=" + $scope.ajax_id + "&" + "ajax_matches=" + $scope.ajax_matches,
+                            data: "ajax_id=" + $scope.ajax_id + "&" + "ajax_matches=[" + $scope.ajax_matches + "]",
                             headers: {"Content-Type": "application/x-www-form-urlencoded"}
                         }).
                         success(function(data, status) {
