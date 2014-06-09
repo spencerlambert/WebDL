@@ -20,8 +20,8 @@ class WebDLControllerAjax extends WebDLControllerBase {
             echo WebDLAjax::json_error("URI is not correct, needs to follow this style, /webdl.php/ajax/[class]/[function]/");
             return false;            
         }
-        $class = $tmp[1];
-        $function = $tmp[2];
+        $class = $tmp[2];
+        $function = $tmp[3];
         
         // Security Though: May want to make it so only classes under the pb folder can be called.
         // It's not so bad, because no parameters can be passed, and it will only call static functions.
