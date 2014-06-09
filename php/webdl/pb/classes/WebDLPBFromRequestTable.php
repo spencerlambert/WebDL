@@ -31,7 +31,7 @@ class WebDLPBFromRequestTable extends WebDLPBFromRequest {
     // Get the DIV that contains the HTML table.
     protected function get_div() {
         $html = '
-            <div class="table'.$this->css_class.'" ng-controller="'.$this->unique_id.'Ctrl">
+            <div class="table'.$this->css_class.'" ng-controller="'.$this->unique_id.'Ctrl" id="'.$this->unique_id.'Ctrl">
                 <table>
                     <thead>
                         <tr>';
