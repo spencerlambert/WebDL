@@ -77,7 +77,7 @@ abstract class WebDLPBFromRequest extends WebDLPBBase {
             $m_list = $_SESSION[$_REQUEST['ajax_id']]['m_list'];
         }
         foreach ($m_list as $match) {
-            $request->push_match($match['c_id'], $match['m_val'], $match['type']);
+            $request->push_match($match->c_id, $match->m_val, $match->type);
         }
         
         // Send the request to the DLM controller
