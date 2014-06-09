@@ -20,7 +20,7 @@ Here is an example for calling a pb (Page Block) from within a PHP project.
     $table->push_column('account_phone', 'Phone Number');
 
     // tell the Page Block you are finished
-    // the DLM (Data Link Module) will be called and the names and phone numbers retrieved.
+    // at this point, the DLM (Data Link Module) will be called and the names and phone numbers retrieved.
     $table->finish();
 
     // display the table with the names and phone numbers.
