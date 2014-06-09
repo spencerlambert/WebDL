@@ -66,15 +66,15 @@ abstract class WebDLPBFromRequest extends WebDLPBBase {
         
         // Add the columns
         $request = new WebDLMRequest();
-        foreach ($_SESSION[$_REQUEST['ajax_id']['c_list'] as $c_id) {
+        foreach ($_SESSION[$_REQUEST['ajax_id']]['c_list'] as $c_id) {
             $request->push_column($c_id);
         }
         
         // Add the match on values
-        if ($_SESSION[$_REQUEST['ajax_id']['update_match']) {
+        if ($_SESSION[$_REQUEST['ajax_id']]['update_match']) {
             $m_list = json_decode($_REQUEST['ajax_matches']);
         } else {
-            $m_list = $_SESSION[$_REQUEST['ajax_id']['m_list'];
+            $m_list = $_SESSION[$_REQUEST['ajax_id']]['m_list'];
         }
         foreach ($m_list as $match) {
             $request->push_match($match['c_id'], $match['m_val'], $match['type']);
