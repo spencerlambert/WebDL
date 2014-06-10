@@ -94,6 +94,21 @@ abstract class WebDLPBFromRequest extends WebDLPBBase {
     // on data that does not require security, but it will need to be made secure.
     // UPDATE: Might have a secure way of making the AJAX call backs, using a session value
     // to store the origial request, and add an option to allow updating on the match.
+    //
+    // The following is a Javascript example for calling the Ajax update function, where the $unique_id = "my_table".
+    // It can also tecnically be called using an AngularJS Event call, but the controller would need to listen to the
+    // events and the calling AngularJS function would need to Broadcast the event, might added it in later...
+    /*
+        <script>
+            function update() {
+                    var scope = angular.element($("#my_tableCtrl")).scope();
+                    scope.reset_matches();
+                    scope.push_match('ID','2','OR');
+                    scope.update();
+                    scope.$apply();
+            }
+        </script>
+    */
     protected function get_angularjs() {
         $json = json_encode($this->result->get_joined_data());
         $js = '
@@ -117,8 +132,10 @@ abstract class WebDLPBFromRequest extends WebDLPBBase {
                     $scope.update = function () {
                         $http({
                             method: "POST",
-                            url: $scope.ajax_uri,
-                            data: "ajax_id=" + $scope.ajax_id + "&" + "ajax_matches=[" + $scope.ajax_matches + "]",
+                            url: $scope.ajax_uri, ';
+                            // Don't like adding the brackets.  It's working but would like a better way that doesn't feel
+                            // like a hack, see comments above.
+        $js .= '            data: "ajax_id=" + $scope.ajax_id + "&" + "ajax_matches=[" + $scope.ajax_matches + "]",
                             headers: {"Content-Type": "application/x-www-form-urlencoded"}
                         }).
                         success(function(data, status) {
