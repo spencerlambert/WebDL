@@ -6,15 +6,19 @@
 class WebDLPBFromRequestTable extends WebDLPBFromRequest {
     
     protected $header = array();
+    protected $c_formating = array();
     protected $css_class = '';
     
     public function __construct($unique_id) {
         parent::__construct($unique_id);
     }
 
-    public function push_column($c_id, $c_name) {
+    // Use c_format_wrapper to add extra html to be used when outputting the column value
+    // Example: "<span class='bold_green'><!--[**VALUE**]--></span>" will place the column vaule inside the span tag.
+    public function push_column($c_id, $c_name, $c_formating="<!--[**VALUE**]-->") {
         parent::push_column($c_id);
         $this->header[$c_id] = $c_name;
+        $this->c_formating[$c_id] = $c_formating;
     }
     
     // Get both the AngularJS and the DIV of the table, and set the HTML var.
@@ -44,7 +48,7 @@ class WebDLPBFromRequestTable extends WebDLPBFromRequest {
                     <tbody>
                         <tr ng-repeat="row in data">';
                         foreach ($this->header as $c_id=>$header) {
-                            $html .= '<td>{{row.'.$c_id.'}}</td>';
+                            $html .= '<td>'.str_replace('<!--[**VALUE**]-->', '{{row.'.$c_id.'}}', $this->c_formating[$c_id]).'</td>';
                         }
         $html .= '
                         </tr>
