@@ -93,6 +93,10 @@ class WebDLMConnector {
     
     
     public function update($key, $foreign_key) {
+        
+        // Special type where keys are not tracked        
+        if ($this->key_type == 'IdenticalValues') return true;
+        
         $db = WebDLResourceManager::get("DB_MASTER_PDO");
 
         switch ($this->type) {
@@ -143,9 +147,14 @@ class WebDLMConnector {
         $sth = $db->prepare($sql);
         $sth->execute($params);
         
+        return true;
     }
     
     public function get_foreign_key($primary_key) {
+        
+        // Special type where Primary and Foreign Keys are the same
+        if ($this->key_type == 'IdenticalValues') return array($primary_key);
+        
         $key_set = array();
         $db = WebDLResourceManager::get("DB_MASTER_PDO");
         $sql = "SELECT DISTINCT
@@ -167,6 +176,10 @@ class WebDLMConnector {
     }
     
     public function get_primary_key($foreign_key) {
+
+        // Special type where Primary and Foreign Keys are the same
+        if ($this->key_type == 'IdenticalValues') return array($primary_key);
+
         $key_set = array();
         $db = WebDLResourceManager::get("DB_MASTER_PDO");
         $sql = "SELECT DISTINCT
@@ -188,6 +201,10 @@ class WebDLMConnector {
     }
     
     public function remove_all($primary_key) {
+
+        // Special type where keys are not tracked
+        if ($this->key_type == 'IdenticalValues') return true;
+
         $db = WebDLResourceManager::get("DB_MASTER_PDO");
         $sql = "DELETE FROM         
                     ".$this->sql_key_table."
@@ -200,6 +217,10 @@ class WebDLMConnector {
     }
     
     public function remove_all_foreign($foreign_key) {
+
+        // Special type where keys are not tracked
+        if ($this->key_type == 'IdenticalValues') return true;
+
         $db = WebDLResourceManager::get("DB_MASTER_PDO");
         $sql = "DELETE FROM         
                     ".$this->sql_key_table."
@@ -212,6 +233,10 @@ class WebDLMConnector {
     }
     
     public function remove_one($key, $foreign_key) {
+
+        // Special type where keys are not tracked
+        if ($this->key_type == 'IdenticalValues') return true;
+
         $db = WebDLResourceManager::get("DB_MASTER_PDO");
         $sql = "DELETE FROM         
                     ".$this->sql_key_table."

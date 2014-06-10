@@ -60,13 +60,15 @@ CREATE TABLE RecordModelHasA (
     INDEX (HasAID)
 );
 
+# The KeyType of IdenticalValues is special and does not use a translation table, as both
+# Primary and Foreign keys are equal across DLMs
 CREATE TABLE DLMConnector (
     ConnectorID             int UNSIGNED NOT NULL AUTO_INCREMENT,
     ConnectorName           varchar(80),
     DLMTreeColumnIDPrimary  varchar(80),
     DLMTreeColumnIDForeign  varchar(80),
     Type	            enum('OneToOne','OneToMany','ManyToMany'),
-    KeyType                 enum('BothInt','BothVarchar','IntToVarchar','VarcharToInt'),
+    KeyType                 enum('BothInt','BothVarchar','IntToVarchar','VarcharToInt','IdenticalValues'),
     PRIMARY KEY (ConnectorID),
     INDEX (DLMTreeColumnIDPrimary),
     INDEX (DLMTreeColumnIDForeign)
