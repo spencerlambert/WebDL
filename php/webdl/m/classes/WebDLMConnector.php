@@ -178,7 +178,7 @@ class WebDLMConnector {
     public function get_primary_key($foreign_key) {
 
         // Special type where Primary and Foreign Keys are the same
-        if ($this->key_type == 'IdenticalValues') return array($primary_key);
+        if ($this->key_type == 'IdenticalValues') return array($foreign_key);
 
         $key_set = array();
         $db = WebDLResourceManager::get("DB_MASTER_PDO");
