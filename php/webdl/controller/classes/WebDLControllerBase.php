@@ -53,7 +53,7 @@ abstract class WebDLControllerBase {
         }
         
         //Make sure permalink always has slashes at the beginning and end, simplifies page matchup for SQL SELECT.
-        $res->uri = "/".trim($res->permalink, "/")."/";
+        $res->uri = "/".trim($res->uri, "/")."/";
         
         //Capitalize the first letter of the controller name.
         //When installing new controller types, they must follow the naming convention ie, ControllerApp
