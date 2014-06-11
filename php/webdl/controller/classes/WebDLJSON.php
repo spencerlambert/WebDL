@@ -18,7 +18,7 @@ class WebDLJSON {
     }
 
     static public function json_dlm_result($result) {
-        return json_encode($result->get_joind_data());
+        return json_encode($result->get_joined_data());
     }
 }
 ?>
