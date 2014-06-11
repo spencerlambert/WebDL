@@ -30,7 +30,7 @@ class WebDLControllerRest extends WebDLControllerBase {
             case "POST":
             case "PUT":
             case "DELETE":
-            case default:
+            default:
                 echo WebDLJSON::json_error("HTTP Method: ".$this->methos." not yet supported");
                 return false;
         }
