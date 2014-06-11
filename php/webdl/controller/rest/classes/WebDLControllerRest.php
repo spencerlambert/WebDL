@@ -13,14 +13,14 @@ class WebDLControllerRest extends WebDLControllerBase {
         $match_val = "";
         
         
-        if (count($parts) == 0) {
+        if (count($parts) <= 1) {
             echo WebDLJSON::json_error("Can't make a request without identifying a record.");
             return false;            
         }
         
-        $r_id = $parts[0];
-        if (isset($parts[1])) $match_col = $parts[1];
-        if (isset($parts[2])) $match_val = urldecode($parts[2]);
+        $r_id = $parts[1];
+        if (isset($parts[2])) $match_col = $parts[1];
+        if (isset($parts[3])) $match_val = urldecode($parts[2]);
         
         switch($this->method) {
             case "GET":
