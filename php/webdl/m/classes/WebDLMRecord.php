@@ -31,7 +31,7 @@ class WebDLMRecord {
             $class->name = $row['Name'];
             $class->count = $row['Count'];
             
-            $has_a[$row['DLMTreeColumnID']] = $class;
+            $this->has_a[$row['DLMTreeColumnID']] = $class;
         }
         
         $this->request = new WebDLMRequest();
