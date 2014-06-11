@@ -19,8 +19,8 @@ class WebDLControllerRest extends WebDLControllerBase {
         }
         
         $r_id = $parts[1];
-        if (isset($parts[2])) $match_col = $parts[1];
-        if (isset($parts[3])) $match_val = urldecode($parts[2]);
+        if (isset($parts[2])) $match_col = $parts[2];
+        if (isset($parts[3])) $match_val = urldecode($parts[3]);
         
         switch($this->method) {
             case "GET":
