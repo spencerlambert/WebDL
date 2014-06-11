@@ -7,7 +7,7 @@ class WebDLMRecord {
     
     public function __construct ($r_id) {
         $db = WebDLResourceManager::get("DB_MASTER_PDO");
-        $this->r_id = $record_id;
+        $this->r_id = $r_id;
 
         $sql = "SELECT * FROM ".WEBDL_MASTER_DB_NAME_WITH_PREFIX."DLMRecordModel WHERE RecordModelID=:id";
         $params = array(':id'=>$this->r_id);
