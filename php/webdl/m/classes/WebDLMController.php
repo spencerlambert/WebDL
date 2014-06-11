@@ -38,7 +38,11 @@ class WebDLMController {
 
     }
     
-    public static  function dlm_request($request) {
+    public static function dlm_record($record) {
+        return self::dlm_request($record->get_request());
+    }
+    
+    public static function dlm_request($request) {
         self::initialize();
         
         // The result of the request.

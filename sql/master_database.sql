@@ -43,21 +43,20 @@ CREATE TABLE DLMTreeLink (
     INDEX (DLMTreeColumnIDForeign)  
 );
 
-CREATE TABLE RecordModel (
+CREATE TABLE DLMRecordModel (
     RecordModelID       varchar(80) UNIQUE NOT NULL,
     Name                varchar(80),
     PRIMARY KEY (RecordModelID)
 );
 
-CREATE TABLE RecordModelHasA (
+CREATE TABLE DLMRecordModelHasA (
     RecordModelID       varchar(80),
-    HasAID              varchar(80),
+    DLMTreeColumnID     varchar(80),
     Name                varchar(80),
-    Type                enum('DLMTreeColumn','RecordModel'),
     Count               enum('One','Many'),
-    PRIMARY KEY (RecordModelID, HasAID, Type),
+    PRIMARY KEY (RecordModelID, DLMTreeColumnID),
     INDEX (RecordModelID),
-    INDEX (HasAID)
+    INDEX (DLMTreeColumnID)
 );
 
 # The KeyType of IdenticalValues is special and does not use a translation table, as both
