@@ -43,7 +43,7 @@ class WebDLMRecord {
     }
 
     public function push_match($c_id, $m_val, $type='AND') {
-        if (array_key_exists($c_id, $this->has_a) {
+        if (array_key_exists($c_id, $this->has_a)) {
             $this->request->push_match($c_id, $m_val, $type);
         } else {
             return false;

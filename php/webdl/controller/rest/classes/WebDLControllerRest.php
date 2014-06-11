@@ -25,7 +25,13 @@ class WebDLControllerRest extends WebDLControllerBase {
         switch($this->method) {
             case "GET":
                 $record = new WebDLMRecord($r_id);
-                if ($match_col != "") $record->push_match($match_col, $match_val);
+                if ($match_col != "") {
+                    $res = $record->push_match($match_col, $match_val);
+                    if ($res === false) {
+                        echo WebDLJSON::json_error("Can't match on ".$match_col);
+                        return false;                        
+                    }
+                }
                 break;
             case "POST":
             case "PUT":
