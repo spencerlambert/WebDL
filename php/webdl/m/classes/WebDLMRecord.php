@@ -1,9 +1,9 @@
 <?php
 class WebDLMRecord {
-    protected var $r_id;
-    protected var $name;
-    protected var $has_a = array();
-    protected var $request;
+    protected $r_id;
+    protected $name;
+    protected $has_a = array();
+    protected $request;
     
     public function __construct ($r_id) {
         $db = WebDLResourceManager::get("DB_MASTER_PDO");
@@ -58,7 +58,6 @@ class WebDLMRecord {
     public function get_request() {
         return $this->request;
     }
-    
     
 }
 ?>
