@@ -15,8 +15,8 @@ abstract class WebDLControllerBase {
     public static function get_requested_controller() {
         $parts = self::get_request_parts();
         //All installed controllers must follow the naming convention ie, ControllerApp
-        $class_name = "WebDLController".$parts->name($parts);
-        return new $class_name;
+        $class_name = "WebDLController".$parts->name;
+        return new $class_name($parts);
     }
     
     // Parse the URL and break it into the required parts for the specific controller
