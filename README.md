@@ -19,7 +19,7 @@ http://webdl.domain.com/rest/account/id/1
 
 `1` gives the value to match the specified column by.
 
-## Example Usage - Inline PHP
+## Example Usage - PHP
 
 The following is an example for retrieving a record from within a PHP application.
 
