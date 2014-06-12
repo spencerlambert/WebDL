@@ -11,7 +11,7 @@ After installing the PHP and setting up the WebDL database, start accessing reco
 http://webdl.domain.com/rest/account/id/1
 ```
 
-`rest` tells the url parser that you are accessing the RESTful interface.  Technically the `rest` can be removed, as it's the default controller.  Other controller types like SOAP can easily be added.
+`rest` tells the url parser that you are accessing the RESTful interface.  Technically the `rest` can be removed, as it's the default controller.
 
 `account` specifies the record type you want returned.
 
