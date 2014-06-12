@@ -6,7 +6,7 @@ allow for installation into existing PHP projects, or work as a standalone RESTf
 ### .htaccess
 
 This is a sample htaccess file that will rewrite the URL and pass it to the webdl.php file.  Use this option if building a
-new WebDL project.
+standalone WebDL RESTful or other service.
 
 ### webdl.php
 
