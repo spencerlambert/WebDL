@@ -1,4 +1,4 @@
-=== Adding a new DLM
+### Adding a new DLM
 
 To create your own DLM, add a new folder using the same name as your DLM class.  Your new class must extend the WebDLMBase class or another DLM, like the WebDLMSoap class.  There are four functions that need to be implemented by your new DLM.
 
