@@ -40,10 +40,6 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
     }
 
     protected function connect() {
-        //Only include the Zend library to include_path if it isn't already included in php.ini
-        if (!class_exists('Zend_Loader', true)) {
-            set_include_path(get_include_path() . PATH_SEPARATOR . $this->install_path . 'library');
-        }
 
         require_once 'Zend/Loader.php';
         Zend_Loader::loadClass('Zend_Gdata_Spreadsheets');
@@ -83,10 +79,10 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
             // Sort out the different parts of the WHERE statement
             switch ($match->type) {
                 case "AND":
-                    $and_ary[] = "{$this->tree->columns[$match->c_id]->c_name}=\"{$match->m_val}\"";
+                    $and_ary[] = strtolower($this->tree->columns[$match->c_id]->c_name) . "=\"{$match->m_val}\"";
                     break;
                 case "OR":
-                    $or_ary[] = "{$this->tree->columns[$match->c_id]->c_name}=\"{$match->m_val}\"";
+                    $or_ary[] = strtolower($this->tree->columns[$match->c_id]->c_name) . "=\"{$match->m_val}\"";
                     break;
                 case "WILDCARD":
                     WebDLUserMessage::output('Google Spreadsheet query doesn\'t support WILDCARD matching, ignoring ' . $match->c_id . ' LIKE ' . $match->val);
@@ -100,6 +96,8 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
         if (count($or_ary) != 0)
             $where_ary[] = "(".implode(' OR ', $or_ary).")";
 
+        if (WEBDL_DEBUG)    echo "DLM ID: " . $this->dlm_id . PHP_EOL;
+        if (WEBDL_DEBUG)    echo "Where " . print_r($where_ary, true);
 
         // Build the SELECT columns part of the query.
         $r_columns = $request->get_columns();
@@ -108,8 +106,9 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
             if (!isset($this->tree->columns[$col->c_id]))
                 continue;
 
-            $col_ary[$col->c_id] = $this->tree->columns[$col->c_id]->c_name;
+            $col_ary[$col->c_id] = strtolower($this->tree->columns[$col->c_id]->c_name);
         }
+        if (WEBDL_DEBUG)    echo "col " . print_r($col_ary, true);
         
         
         // Complete the query
