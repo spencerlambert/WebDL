@@ -101,12 +101,14 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
 
         // Build the SELECT columns part of the query.
         $r_columns = $request->get_columns();
+        $g_col_to_dlm_col = array();
         foreach ($r_columns as $col) {
             // Check if this part of the request applies to this DLM instance.
             if (!isset($this->tree->columns[$col->c_id]))
                 continue;
 
             $col_ary[$col->c_id] = trim(str_replace(' ', '', strtolower($this->tree->columns[$col->c_id]->c_name)));
+            $g_col_to_dlm_col[$col_ary[$col->c_id]] = $this->tree->columns[$col->c_id]->c_name;
         }
         if (WEBDL_DEBUG)    echo "col " . print_r($col_ary, true);
         
@@ -126,7 +128,7 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
             $row = $list_entry->getCustom();
             foreach ($row as $cell) {
                 if (in_array($cell->getColumnName(), $col_ary))
-                    $tmp[$cell->getColumnName()] = $cell->getText();
+                    $tmp[$g_col_to_dlm_col[$cell->getColumnName()]] = $cell->getText();
             }
             if (count($tmp) != 0)
                 $data[] = $tmp;
