@@ -108,7 +108,7 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
                 continue;
 
             $col_ary[$col->c_id] = trim(str_replace(' ', '', strtolower($this->tree->columns[$col->c_id]->c_name)));
-            $g_col_to_dlm_col[$col_ary[$col->c_id]] = $this->tree->columns[$col->c_id]->c_name;
+            $g_col_to_dlm_col[$col_ary[$col->c_id]] = $col->c_id;
         }
         if (WEBDL_DEBUG)    echo "col " . print_r($col_ary, true);
         
