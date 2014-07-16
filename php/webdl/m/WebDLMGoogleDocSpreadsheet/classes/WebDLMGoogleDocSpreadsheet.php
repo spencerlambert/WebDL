@@ -29,6 +29,10 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
         $this->config_list[] = "GDATA_PASS";
         $this->config_list[] = "GDATA_SPREADSHEET_KEY";
         //$this->config_list[] = "GDATA_WORKSHEET_ID";
+        // NORMAL or TABS_AS_COLUMN
+        // NORMAL = The tabs are referenced by name as a table in the DLM Tree
+        // TABS_AS_COLUMN = Only one DLMTreeTable is created, and the tab name in the google doc because a match on value, and all tabs must contain the same header.  Use TABS_AS_COLUMN as the DLMTreeColumn name.
+        $this->config_list[] = "GDATA_MODE";
 
         parent::__construct($dlm_id);
 //         $this->sqlite_filename = $this->install_path."sqlite_dbs/db_".$dlm_id.".sqlite";
@@ -70,6 +74,7 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
         $where_ary = array();
 
         // TODO: Get joins across table working, right now it only pulls data from a single table.
+        // Alternativly, make each Spreadsheet Tab into a DLM and the DLMConnector will do the join.
         $table_name = "";
         
         // Build the WHERE part of the query
@@ -79,8 +84,16 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
             if (!isset($this->tree->columns[$match->c_id]))
                 continue;
 
-            // TODO: Get joins across table working, right now it only pulls data from a single table.
-            $table_name = $this->tree->columns[$match->c_id]->t_name;
+            if ($this->config['GDATA_MODE'] == "TABS_AS_COLUMN") {
+                if ($this->tree->columns[$match->c_id]->c_name == "TABS_AS_COLUMN")
+                    $table_name = $match->m_val;
+
+            } else {
+                // TODO: Get joins across table working, right now it only pulls data from a single table.
+                $table_name = $this->tree->columns[$match->c_id]->t_name;                
+            }
+
+
             // Sort out the different parts of the WHERE statement
             switch ($match->type) {
                 case "AND":
@@ -163,6 +176,8 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
                 if (in_array($cell->getColumnName(), $col_ary))
                     $tmp[$g_col_to_dlm_col[$cell->getColumnName()]] = $cell->getText();
             }
+            if ($this->config['GDATA_MODE'] == "TABS_AS_COLUMN")
+                $tmp['TABS_AS_COLUMN'] = $table_name;
             if (count($tmp) != 0)
                 $data[] = $tmp;
         }
