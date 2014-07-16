@@ -126,9 +126,16 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
         $doc->setSpreadsheetKey($this->config['GDATA_SPREADSHEET_KEY']);
         $feed = $this->spreadsheet_service->getWorksheetFeed($doc);
 
+        $found_match = false;
         foreach ($feed as $sheet) {
-            if ($table_name == $sheet->getTitle()->__toString()) break;
-        }        
+            if ($table_name == $sheet->getTitle()->__toString()) {
+                $found_match = true;
+                break;
+            }
+        }    
+
+        // Do not continue if we done have a sheet match.
+        if ($found_match === false) return array();    
 
         // Get the worksheet id
         // Don't like parsing the sting, but can't find a Zend function that gives me what ListQuery wants. :(
