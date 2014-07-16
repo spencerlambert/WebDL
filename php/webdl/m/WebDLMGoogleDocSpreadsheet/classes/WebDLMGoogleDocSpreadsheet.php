@@ -84,10 +84,18 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
             // Sort out the different parts of the WHERE statement
             switch ($match->type) {
                 case "AND":
-                    $and_ary[] = trim(str_replace(' ', '', strtolower($this->tree->columns[$match->c_id]->c_name))) . "=\"{$match->m_val}\"";
+                    if (is_numeric($match->m_val)) {
+                        $and_ary[] = trim(str_replace(' ', '', strtolower($this->tree->columns[$match->c_id]->c_name))) . "=".$match->m_val;
+                    } else {
+                        $and_ary[] = trim(str_replace(' ', '', strtolower($this->tree->columns[$match->c_id]->c_name))) . "=\"{$match->m_val}\"";                        
+                    }
                     break;
                 case "OR":
-                    $or_ary[] = trim(str_replace(' ', '', strtolower($this->tree->columns[$match->c_id]->c_name))) . "=\"{$match->m_val}\"";
+                    if (is_numeric($match->m_val)) {
+                        $or_ary[] = trim(str_replace(' ', '', strtolower($this->tree->columns[$match->c_id]->c_name))) . "=".$match->m_val;
+                    } else {
+                        $or_ary[] = trim(str_replace(' ', '', strtolower($this->tree->columns[$match->c_id]->c_name))) . "=\"{$match->m_val}\"";
+                    }
                     break;
                 case "WILDCARD":
                     WebDLUserMessage::output('Google Spreadsheet query doesn\'t support WILDCARD matching, ignoring ' . $match->c_id . ' LIKE ' . $match->val, 'WebDLMGoogleDocSpreadsheet.php');
