@@ -20,7 +20,7 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
 //     private $sqlite_db;
     protected $client = false;
     protected $spreadsheet_service =  null;
-    protected $query =  null;
+    protected $has_connected = fasle;
     
     public function __construct($dlm_id) {
         // Add configuration items to the list.
@@ -28,7 +28,7 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
         $this->config_list[] = "GDATA_USER";
         $this->config_list[] = "GDATA_PASS";
         $this->config_list[] = "GDATA_SPREADSHEET_KEY";
-        $this->config_list[] = "GDATA_WORKSHEET_ID";
+        //$this->config_list[] = "GDATA_WORKSHEET_ID";
 
         parent::__construct($dlm_id);
 //         $this->sqlite_filename = $this->install_path."sqlite_dbs/db_".$dlm_id.".sqlite";
@@ -40,6 +40,8 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
     }
 
     protected function connect() {
+
+        if ($this->has_connected) return true;
 
         require_once 'Zend/Loader.php';
         Zend_Loader::loadClass('Zend_Gdata_Spreadsheets');
@@ -55,9 +57,7 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
             return false;
         }
 
-        $this->query = new Zend_Gdata_Spreadsheets_ListQuery();
-        $this->query->setSpreadsheetKey($this->config['GDATA_SPREADSHEET_KEY']);
-        $this->query->setWorksheetId($this->config['GDATA_WORKSHEET_ID']);
+        $this->has_connected = true;
         return true;
     }
 
@@ -68,6 +68,9 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
         $join_ary = array();
         
         $where_ary = array();
+
+        // TODO: Get joins across table working, right now it only pulls data from a single table.
+        $table_name = "";
         
         // Build the WHERE part of the query
         $r_matches = $request->get_matches();
@@ -75,7 +78,9 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
             // Check if this part of the request applies to this DLM instance.
             if (!isset($this->tree->columns[$match->c_id]))
                 continue;
-            
+
+            // TODO: Get joins across table working, right now it only pulls data from a single table.
+            $table_name = $this->tree->columns[$match->c_id]->t_name;
             // Sort out the different parts of the WHERE statement
             switch ($match->type) {
                 case "AND":
@@ -85,11 +90,23 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
                     $or_ary[] = trim(str_replace(' ', '', strtolower($this->tree->columns[$match->c_id]->c_name))) . "=\"{$match->m_val}\"";
                     break;
                 case "WILDCARD":
-                    WebDLUserMessage::output('Google Spreadsheet query doesn\'t support WILDCARD matching, ignoring ' . $match->c_id . ' LIKE ' . $match->val);
+                    WebDLUserMessage::output('Google Spreadsheet query doesn\'t support WILDCARD matching, ignoring ' . $match->c_id . ' LIKE ' . $match->val, 'WebDLMGoogleDocSpreadsheet.php');
                     break;
             }
         }
         
+        $doc = new Zend_Gdata_Spreadsheets_DocumentQuery();
+        $doc->setSpreadsheetKey($this->config['GDATA_SPREADSHEET_KEY']);
+        $feed = $this->spreadsheet_service->getWorksheetFeed($doc);
+
+        foreach ($feed as $sheet) {
+            if ($table_name == $sheet->getTitle()->__toString()) break;
+        }        
+
+        $query = new Zend_Gdata_Spreadsheets_ListQuery();
+        $query->setSpreadsheetKey($this->config['GDATA_SPREADSHEET_KEY']);
+        $query->setWorksheetId($sheet->getId());
+
         // Add the WHERE parts the the where array;
         if (count($and_ary) != 0)
             $where_ary[] = implode(' AND ', $and_ary);
@@ -116,12 +133,12 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
         // Complete the query
         if (count($where_ary) != 0) {
             $q = implode(' AND ', $where_ary);
-            $this->query->setSpreadsheetQuery($q);
+            $query->setSpreadsheetQuery($q);
         }
 
         // Run the query
         $data = array();
-        $listFeed = $this->spreadsheet_service->getListFeed($this->query);
+        $listFeed = $this->spreadsheet_service->getListFeed($query);
 
         foreach($listFeed as $list_entry) {
             $tmp = array();
