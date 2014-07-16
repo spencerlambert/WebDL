@@ -106,7 +106,7 @@ class WebDLMController {
                         
             //Add any matches that need to link to other DLMs from our first results.
             foreach ($connector_run as $dlm_id) {
-                if (isset($data[$dlm_id])) continue; // Don't rerun any dlm that has already been run
+                if (isset($result->dlm_result[$dlm_id])) continue; // Don't rerun any dlm that has already been run
                 $result = self::run_one_dlm($dlm_id, $request, $result);
                 // Now look for keys that match connectors and add the matches to the request.
                 foreach ($result->get_dlm_data($dlm_id) as $row) {
@@ -138,7 +138,7 @@ class WebDLMController {
         
         // Run any remaining DLMs
         foreach ($required_dlms as $dlm_id) {
-            if (isset($data[$dlm_id])) continue; // Don't rerun any dlm that has already been run
+            if (isset($result->dlm_result[$dlm_id])) continue; // Don't rerun any dlm that has already been run
             $result = self::run_one_dlm($dlm_id, $request, $result);
         }
         
