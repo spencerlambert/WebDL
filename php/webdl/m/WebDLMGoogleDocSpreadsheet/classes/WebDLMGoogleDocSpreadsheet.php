@@ -85,9 +85,10 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
                 continue;
 
             if ($this->config['GDATA_MODE'] == "TABS_AS_COLUMN") {
-                if ($this->tree->columns[$match->c_id]->c_name == "TABS_AS_COLUMN")
+                if ($this->tree->columns[$match->c_id]->c_name == "TABS_AS_COLUMN") {
                     $table_name = $match->m_val;
-
+                    continue;
+                }
             } else {
                 // TODO: Get joins across table working, right now it only pulls data from a single table.
                 $table_name = $this->tree->columns[$match->c_id]->t_name;                
