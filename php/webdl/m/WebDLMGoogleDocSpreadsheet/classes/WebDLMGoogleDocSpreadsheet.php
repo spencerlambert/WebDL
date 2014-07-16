@@ -20,7 +20,7 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
 //     private $sqlite_db;
     protected $client = false;
     protected $spreadsheet_service =  null;
-    protected $has_connected = fasle;
+    protected $has_connected = false;
     
     public function __construct($dlm_id) {
         // Add configuration items to the list.
@@ -41,7 +41,7 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
 
     protected function connect() {
 
-        if ($this->has_connected) return true;
+        if ($this->has_connected === true) return true;
 
         require_once 'Zend/Loader.php';
         Zend_Loader::loadClass('Zend_Gdata_Spreadsheets');
