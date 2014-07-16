@@ -126,8 +126,13 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
         $doc->setSpreadsheetKey($this->config['GDATA_SPREADSHEET_KEY']);
         $feed = $this->spreadsheet_service->getWorksheetFeed($doc);
 
+        $tabs = array();
         $found_match = false;
         foreach ($feed as $sheet) {
+            if ($this->config['GDATA_MODE'] == "TABS_AS_COLUMN") {
+                $tmp = explode('/', $sheet->getId()->__toString());
+                $tabs[$sheet->getTitle()->__toString()] = $tmp[count($tmp)-1];
+            }
             if ($table_name == $sheet->getTitle()->__toString()) {
                 $found_match = true;
                 break;
@@ -135,61 +140,71 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
         }    
 
         // Do not continue if we done have a sheet match.
-        if ($found_match === false) return array();    
+        if ($found_match === false && $this->config['GDATA_MODE'] != "TABS_AS_COLUMN") return array();    
 
         // Get the worksheet id
         // Don't like parsing the sting, but can't find a Zend function that gives me what ListQuery wants. :(
-        $tmp = explode('/', $sheet->getId()->__toString());
-        $worksheet_id = $tmp[count($tmp)-1];
-
-        $query = new Zend_Gdata_Spreadsheets_ListQuery();
-        $query->setSpreadsheetKey($this->config['GDATA_SPREADSHEET_KEY']);
-        $query->setWorksheetId($worksheet_id);
-
-        // Add the WHERE parts the the where array;
-        if (count($and_ary) != 0)
-            $where_ary[] = implode(' AND ', $and_ary);
-        if (count($or_ary) != 0)
-            $where_ary[] = "(".implode(' OR ', $or_ary).")";
-
-        //if (WEBDL_DEBUG)    echo "DLM ID: " . $this->dlm_id . PHP_EOL;
-        //if (WEBDL_DEBUG)    echo "Where " . print_r($where_ary, true);
-
-        // Build the SELECT columns part of the query.
-        $r_columns = $request->get_columns();
-        $g_col_to_dlm_col = array();
-        foreach ($r_columns as $col) {
-            // Check if this part of the request applies to this DLM instance.
-            if (!isset($this->tree->columns[$col->c_id]))
-                continue;
-
-            $col_ary[$col->c_id] = trim(str_replace(' ', '', strtolower($this->tree->columns[$col->c_id]->c_name)));
-            $g_col_to_dlm_col[$col_ary[$col->c_id]] = $col->c_id;
-        }
-        //if (WEBDL_DEBUG)    echo "col " . print_r($col_ary, true);
-        
-        
-        // Complete the query
-        if (count($where_ary) != 0) {
-            $q = implode(' AND ', $where_ary);
-            $query->setSpreadsheetQuery($q);
+        if ($found_match) {
+            $tabs = array();
+            $tmp = explode('/', $sheet->getId()->__toString());
+            $tabs[$sheet->getTitle()->__toString()] = $tmp[count($tmp)-1];            
         }
 
-        // Run the query
         $data = array();
-        $listFeed = $this->spreadsheet_service->getListFeed($query);
+        foreach ($tabs as $tab_name => $tab_id) {
 
-        foreach($listFeed as $list_entry) {
-            $tmp = array();
-            $row = $list_entry->getCustom();
-            foreach ($row as $cell) {
-                if (in_array($cell->getColumnName(), $col_ary))
-                    $tmp[$g_col_to_dlm_col[$cell->getColumnName()]] = $cell->getText();
+            $query = new Zend_Gdata_Spreadsheets_ListQuery();
+            $query->setSpreadsheetKey($this->config['GDATA_SPREADSHEET_KEY']);
+            $query->setWorksheetId($tabs_id);
+
+            // Add the WHERE parts the the where array;
+            if (count($and_ary) != 0)
+                $where_ary[] = implode(' AND ', $and_ary);
+            if (count($or_ary) != 0)
+                $where_ary[] = "(".implode(' OR ', $or_ary).")";
+
+            //if (WEBDL_DEBUG)    echo "DLM ID: " . $this->dlm_id . PHP_EOL;
+            //if (WEBDL_DEBUG)    echo "Where " . print_r($where_ary, true);
+
+            // Build the SELECT columns part of the query.
+            $r_columns = $request->get_columns();
+            $g_col_to_dlm_col = array();
+            foreach ($r_columns as $col) {
+                // Check if this part of the request applies to this DLM instance.
+                if (!isset($this->tree->columns[$col->c_id]))
+                    continue;
+
+                $col_ary[$col->c_id] = trim(str_replace(' ', '', strtolower($this->tree->columns[$col->c_id]->c_name)));
+                $g_col_to_dlm_col[$col_ary[$col->c_id]] = $col->c_id;
+                if ($this->tree->columns[$col->c_id]->c_name == "TABS_AS_COLUMN")
+                    $tabs_id = $col->c_id;
+
             }
-            if ($this->config['GDATA_MODE'] == "TABS_AS_COLUMN")
-                $tmp[$tabs_id] = $table_name;
-            if (count($tmp) != 0)
-                $data[] = $tmp;
+            //if (WEBDL_DEBUG)    echo "col " . print_r($col_ary, true);
+            
+            
+            // Complete the query
+            if (count($where_ary) != 0) {
+                $q = implode(' AND ', $where_ary);
+                $query->setSpreadsheetQuery($q);
+            }
+
+            // Run the query
+            $listFeed = $this->spreadsheet_service->getListFeed($query);
+
+            foreach($listFeed as $list_entry) {
+                $tmp = array();
+                $row = $list_entry->getCustom();
+                foreach ($row as $cell) {
+                    if (in_array($cell->getColumnName(), $col_ary))
+                        $tmp[$g_col_to_dlm_col[$cell->getColumnName()]] = $cell->getText();
+                }
+                if ($this->config['GDATA_MODE'] == "TABS_AS_COLUMN")
+                    $tmp[$tabs_id] = $tab_name;
+                if (count($tmp) != 0)
+                    $data[] = $tmp;
+            }
+
         }
         return $data;
     }
