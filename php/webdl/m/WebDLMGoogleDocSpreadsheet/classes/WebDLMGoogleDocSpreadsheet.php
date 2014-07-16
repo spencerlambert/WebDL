@@ -95,6 +95,9 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
             }
         }
         
+
+        // Figure out which table to use
+        // TODO: Get joins across table working, right now it only pulls data from a single table.        
         $doc = new Zend_Gdata_Spreadsheets_DocumentQuery();
         $doc->setSpreadsheetKey($this->config['GDATA_SPREADSHEET_KEY']);
         $feed = $this->spreadsheet_service->getWorksheetFeed($doc);
@@ -103,9 +106,14 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
             if ($table_name == $sheet->getTitle()->__toString()) break;
         }        
 
+        // Get the worksheet id
+        // Don't like parsing the sting, but can't find a Zend function that gives me what ListQuery wants. :(
+        $tmp = explode('/', $sheet->getId()->__toString());
+        $worksheet_id = $tmp[count($tmp)-1];
+
         $query = new Zend_Gdata_Spreadsheets_ListQuery();
         $query->setSpreadsheetKey($this->config['GDATA_SPREADSHEET_KEY']);
-        $query->setWorksheetId($sheet->getId());
+        $query->setWorksheetId($worksheet_id;
 
         // Add the WHERE parts the the where array;
         if (count($and_ary) != 0)
