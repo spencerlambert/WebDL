@@ -130,6 +130,7 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
         $found_match = false;
         foreach ($feed as $sheet) {
             if ($this->config['GDATA_MODE'] == "TABS_AS_COLUMN") {
+                // Build a list of all tables, incase we are the tabs is not a search on filter.
                 $tmp = explode('/', $sheet->getId()->__toString());
                 $tabs[$sheet->getTitle()->__toString()] = $tmp[count($tmp)-1];
             }
