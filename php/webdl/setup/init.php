@@ -85,6 +85,9 @@ if (WEBDL_DEBUG) {
     ini_set("display_errors", 1);
 }
 
+// Add the webdl/library to the include path
+set_include_path(get_include_path() . PATH_SEPARATOR . WEBDL_ABSPATH . 'webdl/library');
+
 // Only start a session if one is not already going.
 if(!isset($_SESSION)) session_start();
 ?>
