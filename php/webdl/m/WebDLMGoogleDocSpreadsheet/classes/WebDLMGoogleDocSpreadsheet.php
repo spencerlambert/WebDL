@@ -145,8 +145,8 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
         if (count($or_ary) != 0)
             $where_ary[] = "(".implode(' OR ', $or_ary).")";
 
-        if (WEBDL_DEBUG)    echo "DLM ID: " . $this->dlm_id . PHP_EOL;
-        if (WEBDL_DEBUG)    echo "Where " . print_r($where_ary, true);
+        //if (WEBDL_DEBUG)    echo "DLM ID: " . $this->dlm_id . PHP_EOL;
+        //if (WEBDL_DEBUG)    echo "Where " . print_r($where_ary, true);
 
         // Build the SELECT columns part of the query.
         $r_columns = $request->get_columns();
@@ -159,7 +159,7 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
             $col_ary[$col->c_id] = trim(str_replace(' ', '', strtolower($this->tree->columns[$col->c_id]->c_name)));
             $g_col_to_dlm_col[$col_ary[$col->c_id]] = $col->c_id;
         }
-        if (WEBDL_DEBUG)    echo "col " . print_r($col_ary, true);
+        //if (WEBDL_DEBUG)    echo "col " . print_r($col_ary, true);
         
         
         // Complete the query
