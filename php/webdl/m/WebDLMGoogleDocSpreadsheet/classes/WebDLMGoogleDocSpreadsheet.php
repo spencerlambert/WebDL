@@ -88,7 +88,7 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
             if ($this->config['GDATA_MODE'] == "TABS_AS_COLUMN") {
                 if ($this->tree->columns[$match->c_id]->c_name == "TABS_AS_COLUMN") {
                     $table_name = $match->m_val;
-                    $tabs_id = $this->tree->columns[$match->c_id]->c_name;
+                    $tabs_id = $match->c_id];
                     continue;
                 }
             } else {
