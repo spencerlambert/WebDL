@@ -128,7 +128,7 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
 
         $found_match = false;
         foreach ($feed as $sheet) {
-            if ($table_name == $sheet->getTitle()->__toString()) {
+            if (strtolower($table_name) == strtolower($sheet->getTitle()->__toString())) {
                 $found_match = true;
                 break;
             }
