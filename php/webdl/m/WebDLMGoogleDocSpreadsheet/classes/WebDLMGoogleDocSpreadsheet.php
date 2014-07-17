@@ -157,6 +157,7 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
             $query = new Zend_Gdata_Spreadsheets_ListQuery();
             $query->setSpreadsheetKey($this->config['GDATA_SPREADSHEET_KEY']);
             $query->setWorksheetId($tab_id);
+            $query->setReverse('true');
 
             // Add the WHERE parts the the where array;
             if (count($and_ary) != 0)
