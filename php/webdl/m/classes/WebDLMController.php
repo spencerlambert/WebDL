@@ -91,10 +91,10 @@ class WebDLMController {
             while (!$have_all) {
                 foreach ($needed_connectors as $connectors) {
                     foreach ($connectors as $connector) {
-                        if (in_array(self::$tree->columns[$connector->c_id]->dlm_id, $connector_run)  && !in_array(self::$tree->columns[$connector->c_id_f]->dlm_id, $connector_run))
-                            $connector_run[] = self::$tree->columns[$connector->c_id_f]->dlm_id;
-                        if (in_array(self::$tree->columns[$connector->c_id_f]->dlm_id, $connector_run)  && !in_array(self::$tree->columns[$connector->c_id]->dlm_id, $connector_run))
+                        if (in_array(self::$tree->columns[$connector->c_id_f]->dlm_id, $connector_dlms)  && !in_array(self::$tree->columns[$connector->c_id]->dlm_id, $connector_run))
                             $connector_run[] = self::$tree->columns[$connector->c_id]->dlm_id;
+                        if (in_array(self::$tree->columns[$connector->c_id]->dlm_id, $connector_dlms)  && !in_array(self::$tree->columns[$connector->c_id_f]->dlm_id, $connector_run))
+                            $connector_run[] = self::$tree->columns[$connector->c_id_f]->dlm_id;
                     }
                 }
                 $have_all = true;
