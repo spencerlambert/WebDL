@@ -119,11 +119,6 @@ class WebDLMRecord {
         $sth = $db->prepare($sql);
         $sth->execute($params);
 
-
-
-        $db = new SQLite3($this->cache_filename);
-
-
         // Run the query
         $data = array();
         foreach ($sth->fetchAll(PDO::FETCH_ASSOC) as $row) {
