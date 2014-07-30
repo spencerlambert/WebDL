@@ -131,7 +131,7 @@ class WebDLMRecord {
         $cols = array();
         $sql = "CREATE TABLE RECORD (";
         foreach ($data[0] as $key => $value) {
-            $sql .= $key. "varchar(255), ";
+            $sql .= $key. " varchar(255), ";
             $cols[] = $key;
         }
         $sql .= "CACHE_TIMESTAMP varchar(255) )";
