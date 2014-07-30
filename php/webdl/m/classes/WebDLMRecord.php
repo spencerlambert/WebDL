@@ -87,13 +87,13 @@ class WebDLMRecord {
             // Sort out the different parts of the WHERE statement
             switch ($match->type) {
                 case "AND":
-                    $and_ary[] = "_".$match->c_id."=:".$param_id
+                    $and_ary[] = "_".$match->c_id."=:".$param_id;
                     break;
                 case "OR":
-                    $or_ary[] = "_".$match->c_id."=:".$param_id
+                    $or_ary[] = "_".$match->c_id."=:".$param_id;
                     break;
                 case "WILDCARD":
-                    $like_ary[] = "_".$match->c_id." LIKE :".$param_id
+                    $like_ary[] = "_".$match->c_id." LIKE :".$param_id;
                     break;
             }
             // Set and increment the param name, so that each is unique.
