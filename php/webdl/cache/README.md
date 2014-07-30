@@ -1,0 +1,1 @@
+Make sure this folder is writable by the web server, typically apache.
