@@ -69,10 +69,16 @@ class WebDLMRecord {
     }
     
     public function cache_request() {
+        // If there is no cache file, then first update cache
+        if (!file_exists($this->cache_filename)) $this->update_cache();
+
         $and_ary = array();
         $or_ary = array();
         $like_ary = array();
         $where_ary = array();
+
+        $params = array();
+        $param_id = 0;
 
         // Build the WHERE part of the query
         $r_matches = $this->request->get_matches();
@@ -81,15 +87,19 @@ class WebDLMRecord {
             // Sort out the different parts of the WHERE statement
             switch ($match->type) {
                 case "AND":
-                    $and_ary[] = $match->c_id."='".SQLite3::escapeString($match->m_val)."'";
+                    $and_ary[] = "_".$match->c_id."=:".$param_id
                     break;
                 case "OR":
-                    $or_ary[] = $match->c_id."='".SQLite3::escapeString($match->m_val)."'";
+                    $or_ary[] = "_".$match->c_id."=:".$param_id
                     break;
                 case "WILDCARD":
-                    $like_ary[] = $match->c_id." LIKE '%".SQLite3::escapeString($match->m_val)."%'";
+                    $like_ary[] = "_".$match->c_id." LIKE :".$param_id
                     break;
             }
+            // Set and increment the param name, so that each is unique.
+            $params[":".$param_id] = $match->m_val;
+            $param_id++;
+
         }
         
         // Add the WHERE parts the the where array;
@@ -104,13 +114,24 @@ class WebDLMRecord {
         if (count($where_ary) != 0)
             $sql .= " WHERE ".implode(' AND ', $where_ary);
 
+        $db = new PDO('sqlite:'.$this->cache_filename);
+
+        $sth = $db->prepare($sql);
+        $sth->execute($params);
+
+
+
         $db = new SQLite3($this->cache_filename);
 
+
         // Run the query
-        $res = $db->query($sql);
         $data = array();
-        while ($row = $res->fetchArray(SQLITE3_ASSOC)) {
-            $data[] = $row;
+        foreach ($sth->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $tmp = array();
+            foreach ($row as $name=>$val) {
+                $tmp[trim($name, "_")] = $val;
+            }
+            $data[] = $tmp;
         }
 
         $result = new WebDLMResult();
@@ -131,8 +152,8 @@ class WebDLMRecord {
         $cols = array();
         $sql = "CREATE TABLE RECORD (";
         foreach ($data[0] as $key => $value) {
-            $sql .= $key. " varchar(255), ";
-            $cols[] = $key;
+            $sql .= "_".$key. " varchar(255), ";
+            $cols[] = "_".$key;
         }
         $sql .= "CACHE_TIMESTAMP varchar(255) )";
         $cols[] = "CACHE_TIMESTAMP";
