@@ -110,7 +110,7 @@ class WebDLMRecord {
         $res = $db->query($sql);
         $data = array();
         while ($row = $res->fetchArray(SQLITE3_ASSOC)) {
-            $data[] = $row
+            $data[] = $row;
         }
 
         $result = new WebDLMResult();
