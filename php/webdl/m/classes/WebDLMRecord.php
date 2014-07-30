@@ -69,8 +69,8 @@ class WebDLMRecord {
     }
     
     public function cache_request() {
-        // If there is no cache file, then first update cache
-        if (!file_exists($this->cache_filename)) $this->update_cache();
+        // If there is no cache file, then return from live data
+        if (!file_exists($this->cache_filename)) return WebDLMController::dlm_request($this->request);
 
         $and_ary = array();
         $or_ary = array();
