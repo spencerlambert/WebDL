@@ -125,7 +125,7 @@ class WebDLMRecord {
 
         $result = WebDLMController::dlm_request($this->request);
 
-        $db = new SQLite3($this->cache_working_filename);
+        $db = new PDO('sqlite:'.$this->cache_working_filename);
 
         $data = $result->get_joined_data();
         $cols = array();
@@ -136,20 +136,32 @@ class WebDLMRecord {
         }
         $sql .= "CACHE_TIMESTAMP varchar(255) )";
         $cols[] = "CACHE_TIMESTAMP";
-        $db->query($sql);
+        $db->exec($sql);
         $timestamp = gmdate("Y-m-d\TH:i:s\Z");
 
-        foreach ($data as $row) {
-            $sql = "INSERT INTO RECORD (";
-            $sql .= implode(",", $cols);
-            $sql .= ") VALUES (";
-            foreach ($row as $value) {
-                $sql .= "'".SQLite3::escapeString($value)."',";
-            }
-            $sql .= "'".$timestamp."')";
-            $db->query($sql);
+        $sql = "INSERT INTO RECORD (";
+        $sql .= implode(",", $cols);
+        $sql .= ") VALUES (";
+        $param_ids = array();
+        foreach ($cols as $i => $val) {
+            $param_ids[] = ":".$i;
         }
-        $db->close();
+        $sql .= implode(",", $param_ids);
+        $sql .= ")";
+
+        $sth = $db->prepare($sql);
+
+        foreach ($data as $row) {
+            $pram_id = 0;
+            $params = array();
+            foreach ($row as $value) {
+                $params[':'.$pram_id] = $value;
+                $pram_id++;
+            }
+            $params[':'.$pram_id] = $timestamp;
+            $sth->execute($params);
+        }
+        $db = null;
 
         rename($this->cache_working_filename, $this->cache_filename); 
 
