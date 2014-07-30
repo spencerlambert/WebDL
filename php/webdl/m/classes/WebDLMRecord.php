@@ -81,13 +81,13 @@ class WebDLMRecord {
             // Sort out the different parts of the WHERE statement
             switch ($match->type) {
                 case "AND":
-                    $and_ary[] = $this->tree->columns[$match->c_id]->c_name."='".SQLite3::escapeString$match->m_val)."'";
+                    $and_ary[] = $match->c_id."='".SQLite3::escapeString$match->m_val)."'";
                     break;
                 case "OR":
-                    $or_ary[] = $this->tree->columns[$match->c_id]->c_name."='".SQLite3::escapeString$match->m_val)."'";
+                    $or_ary[] = $match->c_id."='".SQLite3::escapeString$match->m_val)."'";
                     break;
                 case "WILDCARD":
-                    $like_ary[] = $this->tree->columns[$match->c_id]->c_name." LIKE '%".SQLite3::escapeString$match->m_val)."%'";
+                    $like_ary[] = $match->c_id." LIKE '%".SQLite3::escapeString$match->m_val)."%'";
                     break;
             }
         }
