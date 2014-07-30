@@ -25,8 +25,8 @@ class WebDLMRecord {
         $this->is_cached = false;
         if ($row['Caching'] == 'On') {
             $this->is_cached = true;
-            $this->cache_working_filename = WEBDL_ABSPATH."/webdl/cache/".$this->name."_working.sqlite";
-            $this->cache_filename = WEBDL_ABSPATH."/webdl/cache/".$this->name.".sqlite";
+            $this->cache_working_filename = WEBDL_ABSPATH."/webdl/cache/".$this->r_id."_working.sqlite";
+            $this->cache_filename = WEBDL_ABSPATH."/webdl/cache/".$this->r_id.".sqlite";
         }
         
         $sql = "SELECT * FROM ".WEBDL_MASTER_DB_NAME_WITH_PREFIX."DLMRecordModelHasA WHERE RecordModelID=:id";
