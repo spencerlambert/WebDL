@@ -39,7 +39,11 @@ class WebDLMController {
     }
     
     public static function dlm_record($record) {
-        return self::dlm_request($record->get_request());
+        if ($record->is_cached) {
+            return $record->cache_request();
+        } else {
+            return self::dlm_request($record->get_request());
+        }
     }
     
     public static function dlm_request($request) {

@@ -46,6 +46,7 @@ CREATE TABLE DLMTreeLink (
 CREATE TABLE DLMRecordModel (
     RecordModelID       varchar(80) UNIQUE NOT NULL,
     Name                varchar(80),
+    Caching             enum('On','Off') DEFAULT 'Off', 
     PRIMARY KEY (RecordModelID)
 );
 
