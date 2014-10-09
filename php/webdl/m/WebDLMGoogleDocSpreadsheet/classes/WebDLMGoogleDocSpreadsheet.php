@@ -57,7 +57,7 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
         } catch (Exception $e) {
             $this->client = false;
             $this->spreadsheet_service = null;
-            WebDLUserMessage::output('Google Spreadsheet Connection failed: ' . $e->getMessage());
+            WebDLUserMessage::output('Google Spreadsheet Connection failed: ' . $e->getMessage(), 'WebDLMGoogleDocSpreadsheet.php');
             return false;
         }
 
