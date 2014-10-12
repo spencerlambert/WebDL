@@ -77,7 +77,26 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
         // Alternativly, make each Spreadsheet Tab into a DLM and the DLMConnector will do the join.
         $table_name = "";
         $tabs_id = "";
-        
+
+        // pre-set table name based on columns
+        $r_cols = $request->get_columns();
+        foreach ($r_cols as $col) {
+            // Check if this part of the request applies to this DLM instance.
+            if (!isset($this->tree->columns[$col->c_id]))
+                continue;
+
+            if ($this->config['GDATA_MODE'] == "TABS_AS_COLUMN") {
+                if ($this->tree->columns[$col->c_id]->c_name == "TABS_AS_COLUMN") {
+                    //$table_name = $col->m_val;
+                    $tabs_id = $col->c_id;
+                    continue;
+                }
+            } else {
+                // TODO: Get joins across table working, right now it only pulls data from a single table.
+                $table_name = $this->tree->columns[$col->c_id]->t_name;                
+            }
+        }
+
         // Build the WHERE part of the query
         $r_matches = $request->get_matches();
         foreach ($r_matches as $match) {
@@ -118,7 +137,7 @@ class WebDLMGoogleDocSpreadsheet extends WebDLMBase {
                     break;
             }
         }
-        
+
 
         // Figure out which table to use
         // TODO: Get joins across table working, right now it only pulls data from a single table.        
