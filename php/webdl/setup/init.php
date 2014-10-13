@@ -89,5 +89,5 @@ if (WEBDL_DEBUG) {
 set_include_path(get_include_path() . PATH_SEPARATOR . WEBDL_ABSPATH . 'webdl/library');
 
 // Only start a session if one is not already going.
-if(!isset($_SESSION)) session_start();
+//if(!isset($_SESSION)) session_start();
 ?>
