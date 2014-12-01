@@ -68,7 +68,7 @@ class WebDLMLDAP extends WebDLMBase {
             
         }
         if (count($and_ary) == 0)
-            $and_ary[] = "(sAMAccountName=*)";
+            $and_ary[] = "(OU=People)";
         
         // Add the WHERE parts the the where array;
         if (count($and_ary) == 1) {
