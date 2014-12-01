@@ -68,7 +68,7 @@ class WebDLMLDAP extends WebDLMBase {
             
         }
         if (count($and_ary) == 0)
-            $and_ary[] = "(cn=*)"
+            $and_ary[] = "(cn=*)";
         
         // Add the WHERE parts the the where array;
         if (count($and_ary) == 1) {
