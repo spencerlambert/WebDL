@@ -84,8 +84,13 @@ class WebDLMLDAP extends WebDLMBase {
         // Fetch results
         if (count($and_ary) == 0) {
             // Selecting all records, doing a special fetch.
-            $filter = "(sAMAccountName=a*)";
-            $rows = $this->search($filter, $col_ary, $col_to_id);
+            $letters = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z');
+            $rows = array();
+            foreach ($letters as $letter) {
+                $filter = "(sAMAccountName=".$leter."*)";
+                $tmp_rows = $this->search($filter, $col_ary, $col_to_id);
+                $rows = array_merge($rows, $tmp_rows);
+            }
         } else {
             $filter = "(&".implode('', $and_ary).")";
             $rows = $this->search($filter, $col_ary, $col_to_id);
@@ -101,6 +106,7 @@ class WebDLMLDAP extends WebDLMBase {
         $ldapbind = ldap_bind($this->ldapconn, $this->config['LDAP_BIND_RDN'], $this->config['LDAP_BIND_PASS']);
         $res = ldap_search($this->ldapconn, $this->config['LDAP_BASE_DN'], $filter, $col_ary);
         $vals = ldap_get_entries($this->ldapconn, $res);
+        ldap_unbind($this->ldapcon);
 
         foreach ($vals as $row) {
             if (!is_array($row)) continue;
