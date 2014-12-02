@@ -57,13 +57,13 @@ class WebDLMLDAP extends WebDLMBase {
             // Sort out the different parts of the WHERE statement
             switch ($match->type) {
                 case "AND":
-                    $and_ary[] = '('.$this->tree->columns[$match->c_id]->c_name."='".$match->m_val."')";
+                    $and_ary[] = '('.$this->tree->columns[$match->c_id]->c_name."=".$match->m_val.")";
                     break;
                 case "OR":
                     //Not Implemented
                     break;
                 case "WILDCARD":
-                    $and_ary[] = '('.$this->tree->columns[$match->c_id]->c_name."='*".$match->m_val."*')";
+                    $and_ary[] = '('.$this->tree->columns[$match->c_id]->c_name."=*".$match->m_val."*)";
                     break;
             }
             
