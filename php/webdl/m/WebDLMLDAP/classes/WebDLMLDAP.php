@@ -67,16 +67,6 @@ class WebDLMLDAP extends WebDLMBase {
             }
             
         }
-        if (count($and_ary) == 0)
-            $and_ary[] = "(OU=People)";
-        
-        // Add the WHERE parts the the where array;
-        if (count($and_ary) == 1) {
-            $filter = $and_ary[0];
-        } else {
-            $filter = "(&".implode('', $and_ary).")";
-        }
-
 
         // Build the SELECT columns part of the query.
         $r_columns = $request->get_columns();
@@ -88,11 +78,40 @@ class WebDLMLDAP extends WebDLMBase {
             $col_ary[] = $this->tree->columns[$col->c_id]->c_name;
         }
 
+
+        // Fetch results
+        if (count($and_ary) == 0) {
+            // Selecting all records, doing a special fetch.
+            $filter = "(sAMAccountName=a*)";
+            $rows = $this->search($filter, $col_ary);
+        } else {
+            $filter = "(&".implode('', $and_ary).")";
+            $rows = $this->search($filter, $col_ary);
+        }
+        
+        return $rows;
+
+    }
+
+    private function search($filter, $col_ary) {
+
+        $rows = array();
         $ldapbind = ldap_bind($this->ldapconn, $this->config['LDAP_BIND_RDN'], $this->config['LDAP_BIND_PASS']);
         $res = ldap_search($this->ldapconn, $this->config['LDAP_BASE_DN'], $filter, $col_ary);
         $vals = ldap_get_entries($this->ldapconn, $res);
-        
-        return $vals;
+
+        foreach ($vals as $row) {
+            $process_row = array();
+            foreach ($row as $key => $value) {
+                foreach ($col_ary as $col_name) {
+                    if (strtolower($col_name) == $key)
+                        $process_row[$col_name] = $value[0];
+                }
+            }
+            $rows[] = $process_row;
+        }
+
+        return $rows;
 
     }
     public function post($request) {
