@@ -101,8 +101,10 @@ class WebDLMLDAP extends WebDLMBase {
         $vals = ldap_get_entries($this->ldapconn, $res);
 
         foreach ($vals as $row) {
+            if (!is_array($row)) continue;
             $process_row = array();
             foreach ($row as $key => $value) {
+                if (!is_array($value)) continue;
                 foreach ($col_ary as $col_name) {
                     if (strtolower($col_name) == $key)
                         $process_row[$col_name] = $value[0];
