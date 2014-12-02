@@ -43,6 +43,7 @@ class WebDLMLDAP extends WebDLMBase {
         $and_ary = array();
         $col_ary = array();
         $join_ary = array();
+        $col_to_id = array();
         
         $where_ary = array();
         
@@ -76,6 +77,7 @@ class WebDLMLDAP extends WebDLMBase {
                 continue;
             
             $col_ary[] = $this->tree->columns[$col->c_id]->c_name;
+            $col_to_id[$this->tree->columns[$col->c_id]->c_name] = $col->c_id;
         }
 
 
@@ -83,17 +85,17 @@ class WebDLMLDAP extends WebDLMBase {
         if (count($and_ary) == 0) {
             // Selecting all records, doing a special fetch.
             $filter = "(sAMAccountName=a*)";
-            $rows = $this->search($filter, $col_ary);
+            $rows = $this->search($filter, $col_ary, $col_to_id);
         } else {
             $filter = "(&".implode('', $and_ary).")";
-            $rows = $this->search($filter, $col_ary);
+            $rows = $this->search($filter, $col_ary, $col_to_id);
         }
         
         return $rows;
 
     }
 
-    private function search($filter, $col_ary) {
+    private function search($filter, $col_ary, $col_to_id) {
 
         $rows = array();
         $ldapbind = ldap_bind($this->ldapconn, $this->config['LDAP_BIND_RDN'], $this->config['LDAP_BIND_PASS']);
@@ -107,7 +109,7 @@ class WebDLMLDAP extends WebDLMBase {
                 if (!is_array($value)) continue;
                 foreach ($col_ary as $col_name) {
                     if (strtolower($col_name) == $key)
-                        $process_row[$col_name] = $value[0];
+                        $process_row[$col_to_id[$col_name]] = $value[0];
                 }
             }
             $rows[] = $process_row;
