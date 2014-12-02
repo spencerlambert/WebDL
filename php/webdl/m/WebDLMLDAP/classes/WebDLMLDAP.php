@@ -106,7 +106,6 @@ class WebDLMLDAP extends WebDLMBase {
         $ldapbind = ldap_bind($this->ldapconn, $this->config['LDAP_BIND_RDN'], $this->config['LDAP_BIND_PASS']);
         $res = ldap_search($this->ldapconn, $this->config['LDAP_BASE_DN'], $filter, $col_ary);
         $vals = ldap_get_entries($this->ldapconn, $res);
-        ldap_unbind($this->ldapconn);
 
         foreach ($vals as $row) {
             if (!is_array($row)) continue;
