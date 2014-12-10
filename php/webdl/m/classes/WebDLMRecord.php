@@ -140,10 +140,12 @@ class WebDLMRecord {
         if (file_exists($this->cache_working_filename)) return false;
 
         $result = WebDLMController::dlm_request($this->request);
+        $data = $result->get_joined_data();
+
+        //Don't have data, so don't update file.
+        if (!isset($data[0])) return false;
 
         $db = new PDO('sqlite:'.$this->cache_working_filename);
-
-        $data = $result->get_joined_data();
         $cols = array();
         $sql = "CREATE TABLE RECORD (";
         foreach ($data[0] as $key => $value) {
